@@ -61,6 +61,67 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/06/07/用Go实现JVM指令集/"><span>用Go实现JVM指令集</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/06/07/用Go实现JVM指令集/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-06-07T08:14:42.000Z">
+          2017-06-07
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>go-jvm项目已经实现了接近80%的指令集，目前已经能执行一些简单的jvm程序。</li>
+<li>指令集的实现在go-jvm项目的instructions目录中。</li>
+<li>取一部分go-jvm做高斯5050的代码执行给大家看看。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">pc:11 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:12 inst:*math.IADD &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:13 inst:*stores.ISTORE_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:14 inst:*math.IINC &amp;&#123;2 1&#125;</div><div class="line">pc:17 inst:*control.GOTO &amp;&#123;&#123;-13&#125;&#125;</div><div class="line">pc: 4 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc: 5 inst:*constants.BIPUSH &amp;&#123;100&#125;</div><div class="line">pc: 7 inst:*comparisons.IF_ICMPGT &amp;&#123;&#123;13&#125;&#125;</div><div class="line">pc:10 inst:*loads.ILOAD_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:11 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:12 inst:*math.IADD &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:13 inst:*stores.ISTORE_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:14 inst:*math.IINC &amp;&#123;2 1&#125;</div><div class="line">pc:17 inst:*control.GOTO &amp;&#123;&#123;-13&#125;&#125;</div><div class="line">pc: 4 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc: 5 inst:*constants.BIPUSH &amp;&#123;100&#125;</div><div class="line">pc: 7 inst:*comparisons.IF_ICMPGT &amp;&#123;&#123;13&#125;&#125;</div><div class="line">pc:10 inst:*loads.ILOAD_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:11 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:12 inst:*math.IADD &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:13 inst:*stores.ISTORE_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:14 inst:*math.IINC &amp;&#123;2 1&#125;</div><div class="line">pc:17 inst:*control.GOTO &amp;&#123;&#123;-13&#125;&#125;</div><div class="line">pc: 4 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc: 5 inst:*constants.BIPUSH &amp;&#123;100&#125;</div><div class="line">pc: 7 inst:*comparisons.IF_ICMPGT &amp;&#123;&#123;13&#125;&#125;</div><div class="line">pc:10 inst:*loads.ILOAD_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:11 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:12 inst:*math.IADD &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:13 inst:*stores.ISTORE_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:14 inst:*math.IINC &amp;&#123;2 1&#125;</div><div class="line">pc:17 inst:*control.GOTO &amp;&#123;&#123;-13&#125;&#125;</div><div class="line">pc: 4 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc: 5 inst:*constants.BIPUSH &amp;&#123;100&#125;</div><div class="line">pc: 7 inst:*comparisons.IF_ICMPGT &amp;&#123;&#123;13&#125;&#125;</div><div class="line">pc:10 inst:*loads.ILOAD_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:11 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:12 inst:*math.IADD &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:13 inst:*stores.ISTORE_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:14 inst:*math.IINC &amp;&#123;2 1&#125;</div><div class="line">pc:17 inst:*control.GOTO &amp;&#123;&#123;-13&#125;&#125;</div><div class="line">pc: 4 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc: 5 inst:*constants.BIPUSH &amp;&#123;100&#125;</div><div class="line">pc: 7 inst:*comparisons.IF_ICMPGT &amp;&#123;&#123;13&#125;&#125;</div><div class="line">pc:10 inst:*loads.ILOAD_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:11 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:12 inst:*math.IADD &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:13 inst:*stores.ISTORE_1 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc:14 inst:*math.IINC &amp;&#123;2 1&#125;</div><div class="line">pc:17 inst:*control.GOTO &amp;&#123;&#123;-13&#125;&#125;</div><div class="line">pc: 4 inst:*loads.ILOAD_2 &amp;&#123;&#123;&#125;&#125;</div><div class="line">pc: 5 inst:*constants.BIPUSH &amp;&#123;100&#125;</div><div class="line">pc: 7 inst:*comparisons.IF_ICMPGT &amp;&#123;&#123;13&#125;&#125;</div><div class="line">LocalVars:[&#123;0 &lt;nil&gt;&#125; &#123;5050 &lt;nil&gt;&#125; &#123;101 &lt;nil&gt;&#125;]</div></pre></td></tr></table></figure>
+<ul>
+<li>确实说明高斯确实是对的。。。</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a><a href="/tags/JVM/">JVM</a><a href="/tags/Java/">Java</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/06/07/用Go解析Java-ByteCode/"><span>用Go解析Java ByteCode</span></a></h3>
     
   
@@ -99,7 +160,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Java/">Java</a><a href="/tags/Go/">Go</a>
+        <a href="/tags/Go/">Go</a><a href="/tags/Java/">Java</a>
     </span>
     
 
