@@ -47,9 +47,9 @@
   <nav class="site-navigation">
     <ul>
       
-        <li><a href="/">Home</a></li>
+        <li><a href="/">主页</a></li>
       
-        <li><a href="/archives">Archives</a></li>
+        <li><a href="/archives">归档</a></li>
       
     </ul>
   </nav>
@@ -85,8 +85,8 @@
 <li>目的：在流计算的场景中，我们经常需要做Freq Counting，而普通的HashTable、Counted BF都有Linear的空间复杂度，CountMin Sketch能让你把性能降到Sub Linear，当然可能会有误差。</li>
 <li>过程：<ul>
 <li>构建一个m * d的二维数组，每一行都有一个hash函数控制。</li>
-<li>遍历（添加）每个元素时，算出d个0 - (m - 1)的hash value，丢到对应的d个槽中。</li>
-<li>如果要计算某个值的Freq，依然hash出那d个value，去对应槽中最小的。</li>
+<li>遍历（添加）每个元素时，算出d个0 - (m - 1)的hash value，对应d个槽自增下</li>
+<li>如果要计算某个值的Freq，依然hash出那d个value，去对应槽中值最小的。</li>
 </ul>
 </li>
 <li>性质<ul>
@@ -171,7 +171,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Java/">Java</a><a href="/tags/Go/">Go</a><a href="/tags/JVM/">JVM</a>
+        <a href="/tags/Go/">Go</a><a href="/tags/JVM/">JVM</a><a href="/tags/Java/">Java</a>
     </span>
     
 
@@ -225,7 +225,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Java/">Java</a><a href="/tags/Go/">Go</a>
+        <a href="/tags/Go/">Go</a><a href="/tags/Java/">Java</a>
     </span>
     
 
@@ -808,7 +808,7 @@
 <nav class="pagination">
   
   
-  <a href="/page/2/" class="pagination-next">Next</a>
+  <a href="/page/2/" class="pagination-next">下一页</a>
   
 </nav>
     </main>
