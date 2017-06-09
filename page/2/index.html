@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Page 2 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/05/23/Lucene-Core-Algo-and-DS-1-最小完美哈希/"><span>Lucene Core Algo and DS(1) - 最小完美哈希</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/23/Lucene-Core-Algo-and-DS-1-最小完美哈希/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-23T04:28:57.000Z">
+          2017-05-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="最小完美哈希"><a href="#最小完美哈希" class="headerlink" title="最小完美哈希"></a>最小完美哈希</h1><ul>
+<li><p>目的</p>
+<ul>
+<li>为了快速的定位倒排索引中Term的位置，需要使用哈希表。但是哈希冲突是很伤的事情，所以如果能够有一个哈希函数使得每个Term都落入不同的桶就好了。最小完美哈希闪亮登场了。</li>
+</ul>
+</li>
+<li><p>局限</p>
+<ul>
+<li>所有的key都必须都知道。</li>
+<li>要有不小于|key|的桶数。</li>
+</ul>
+</li>
+<li><p>CHM算法</p>
+<ul>
+<li><p>目的：<img src="http://images.cnitblog.com/blog/103165/201408/281016168298728.gif" alt="clip_image016"></p>
+</li>
+<li><p>实现：<img src="http://images.cnitblog.com/blog/103165/201408/281016196883203.gif" alt="clip_image018"></p>
+</li>
+<li><p><img src="http://images.cnitblog.com/blog/103165/201408/281016529234955.gif" alt="clip_image036"></p>
+</li>
+<li><p>注意通常ix的空间为key的空间的两倍以上。</p>
+</li>
+<li><p>设计G：</p>
+<ul>
+<li><p>等价于无环图的遍历</p>
+</li>
+<li><p><img src="http://images.cnitblog.com/blog/103165/201408/281017063763265.gif" alt="clip_image040"></p>
+</li>
+<li><p><img src="http://images.cnitblog.com/blog/103165/201408/281017083607838.gif" alt="clip_image042"></p>
+</li>
+<li><p><img src="http://images.cnitblog.com/blog/103165/201408/281017103917426.gif" alt="clip_image044"></p>
+</li>
+<li><p>所以如果g(i1) = 0, g(i2) 一定等于0，g(i3)一定等于1…</p>
+</li>
+<li><p>如果上述的dependency在特定ix中会存在环，最后相当于矩阵不可逆，也就无法求出解了。</p>
+</li>
+<li><p>如何构造出无环的ix呢？</p>
+</li>
+<li><p>答案就是：F1(str) == sum str[i] + RndTable1[i] mod n。n就是上面中讲到的ix的space。RndTable1是用随机数打的表。F2的结构也类似，只不过是生成的表不同。</p>
+</li>
+<li><p>居然用随机的话，很明显了，就是RP好无环就手工，有环就再返工重新生成RndTable，</p>
+</li>
+<li><p>现在需要的就是分析这个凑的过程的运行效率问题。这个就要涉及到f1,f2这两个函数的值域大小，如果越大，越容易凑出一个g函数，但是g函数的参数域就会比较大，存储这个f函数的数据就需要占用更多的空间。相反如果值域越小，在凑的时候就非常容易出现环，需要更长的时间才能凑出这个g函数。</p>
+</li>
+<li><p>怎么办呢？</p>
+<p>我们可以使用3个的h函数来降低形成环的可能，就是这样h(x)=g(h1(x))+g(h2(x))+g(h3(x))modn ，这样虽然推理g函数的过程会复杂一些，但是很有效，有实验分析表明，当h函数的值域大约参数域的1.23倍的时候，这个g函数的创建尝试次数是常数。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Lucene-Algo/">Lucene, Algo</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/" class="pagination-prev">Prev</a>
+  
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

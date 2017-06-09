@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>用Go解析Java ByteCode | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+  <title>CountMin Sketch | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
 
   
   <meta name="author" content="LawrencePeng">
@@ -15,14 +15,14 @@
 
   
   
-  <meta name="keywords" content="Java,Go">
+  <meta name="keywords" content="大数据,DS">
   
 
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="用Go解析Java ByteCode"/>
+  <meta property="og:title" content="CountMin Sketch"/>
 
   <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
 
@@ -63,15 +63,15 @@
 
   
     
-    <h3 class="article-title"><span>用Go解析Java ByteCode</span></h3>
+    <h3 class="article-title"><span>CountMin Sketch</span></h3>
     
   
 
   <div class="article-top-meta">
     <span class="posted-on">
-      <a href="/2017/06/07/用Go解析Java-ByteCode/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-06-07T05:23:10.000Z">
-          2017-06-07
+      <a href="/2017/06/09/CountMin-Sketch/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-06-09T13:35:07.000Z">
+          2017-06-09
         </time>
       </a>
     </span>
@@ -83,8 +83,19 @@
   <div class="article-content">
     <div class="entry">
       
-        <p>最近写了一个Java ByteCode的解析器，其实感觉ByteCode文件的结果非常简单，所以最后都是自动机的形式就可以了。后面我会用Go完成一个JVM。地址在我的go-jvm项目的classfile部分。贴一个ClassFile的结构</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> ClassFile <span class="keyword">struct</span> &#123;</div><div class="line">	minorVersion	<span class="keyword">uint16</span></div><div class="line">	majorVersion	<span class="keyword">uint16</span></div><div class="line">	constantPool	ConstantPool</div><div class="line">	accessFlags		<span class="keyword">uint16</span></div><div class="line">	thisClass		<span class="keyword">uint16</span></div><div class="line">	superClass		<span class="keyword">uint16</span></div><div class="line">	interfaces		[]<span class="keyword">uint16</span></div><div class="line">	fields			[]*MemberInfo</div><div class="line">	methods			[]*MemberInfo</div><div class="line">	attributes		[]AttributeInfo</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <ul>
+<li>目的：在流计算的场景中，我们经常需要做Freq Counting，而普通的HashTable、Counted BF都有Linear的空间复杂度，CountMin Sketch能让你把性能降到Sub Linear，当然可能会有误差。</li>
+<li>过程：<ul>
+<li>构建一个m * d的二维数组，每一行都有一个hash函数控制。</li>
+<li>遍历（添加）每个元素时，算出d个0 - (m - 1)的hash value，丢到对应的d个槽中。</li>
+<li>如果要计算某个值的Freq，依然hash出那d个value，去对应槽中最小的。</li>
+</ul>
+</li>
+<li>性质<ul>
+<li>很明显这个一个只会高估不会低估的过程，对于在长尾上的元素，很可能因为其他元素也映射到了一样的槽中，产生大量冲突，造成误差，所以也有Count-Min-Mean Sketch，这里就不介绍了，有兴趣的可以自己查阅相关资料。 </li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -101,7 +112,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Java/">Java</a><a href="/tags/Go/">Go</a>
+        <a href="/tags/大数据/">大数据</a><a href="/tags/DS/">DS</a>
     </span>
     
 
