@@ -61,6 +61,102 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/05/24/搜索引擎的常见评价指标/"><span>搜索引擎的常见评价指标</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/24/搜索引擎的常见评价指标/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-24T04:46:24.000Z">
+          2017-05-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>F Score<ul>
+<li>带权的召回率和准确率的调和平均数<img src="http://www.biaodianfu.com/wp-content/uploads/2016/09/f-measure.jpg" alt="f-measure"></li>
+<li>当alpha为1的时候，为常见的F1 Score。<img src="http://www.biaodianfu.com/wp-content/uploads/2016/09/f1-measure.jpg" alt="f1-measure"></li>
+</ul>
+</li>
+<li>E Score<ul>
+<li><img src="http://www.biaodianfu.com/wp-content/uploads/2016/09/e.jpg" alt="e">，所以F = 1 - E。</li>
+</ul>
+</li>
+<li>G-measure<ul>
+<li>精度和召回率的几何平均值</li>
+<li>也被称作Fowlkes-Mallows index</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>mAP(mean Average Precision)</p>
+<ul>
+<li>mAP是为解决P，R，F-measure的单点值局限性的。为了得到 一个能够反映全局性能的指标，可以看考察下图，其中两条曲线(方块点与圆点)分布对应了两个检索系统的准确率-召回率曲线。</li>
+<li><img src="http://www.biaodianfu.com/wp-content/uploads/2016/09/p-r.png" alt="p-r"></li>
+<li>​</li>
+<li><img src="http://www.biaodianfu.com/wp-content/uploads/2016/09/map.png" alt="map"></li>
+</ul>
+</li>
+<li><p>ROC曲线</p>
+<ul>
+<li>横轴是假阳率/特异度（真阴/ 所有阴），纵轴是真阳率或者敏感度</li>
+<li>AOC值是ROC曲线覆盖的面积。越大分类效果越好。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>kappa statistic — 衡量不同人相关性判断的一致性</p>
+<ul>
+<li>K(A) = P(A) - P(E) / 1 - P(E)</li>
+<li>P(A)是一致性判断指标，P（E）是随机情况下一致性判断比例。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><a href="http://www.wikiwand.com/en/Discounted_cumulative_gain" target="_blank" rel="external">DGC</a></li>
+</ul>
+<p>  ​<br>  ​<br>  ​    </p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Search-Engine/">Search Engine</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/05/23/Lucene-Core-Algo-and-DS-1-最小完美哈希/"><span>Lucene Core Algo and DS(1) - 最小完美哈希</span></a></h3>
     
   
