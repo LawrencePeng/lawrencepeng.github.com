@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在压缩数据进行检索-SuccinctStore解析 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="Database,IR,Compression,Succinct Data Structure">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="在压缩数据进行检索-SuccinctStore解析"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>在压缩数据进行检索-SuccinctStore解析</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/07/16/在压缩数据进行检索-SuccinctStore解析/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-07-16T13:51:05.000Z">
+          2017-07-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>动机<ul>
+<li>当今数据库实现Secondary Index的方式主要包括列族和建立索引两种方式。前者对于空间非常高效，但是当数据量达到一定规模后，检索性能会有开始下降。而后者虽然能够狠高效的检索，却可能会需要付出额外的存储空间，最后可能只能store在外存，无法很好的利用memory，虽然索引也可以选择一些前缀压缩的方式，但是也带来了其他问题。</li>
+<li>如果能够将数据进行压缩后直接进行检索，那么我们就能把更多的数据放在memory中，关键是这种技术真的存在么？</li>
+<li>答案是肯定的，这种技术叫做Succinct Data Structure，虽然我觉得称为技术有点不太对，因为这本质上是一种更加省空间的数据结构的实现方式。并且能达到Self-Indexing（数据就是索引）的效果。这部分的内容MIT的Advanced Data Structures有提及，对这部分感兴趣的同学可以去看看。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>设计选择<ul>
+<li>我选择了Succinct Suffix Array来实现整个数据库存储引擎。</li>
+<li>通过引入NPA(Next Position Array)来减少对于SA，ISA等其他存储的需要。这些后面我会有机会会介绍。</li>
+<li>正则表达式的支持是我目前在努力实现的下一部分功能。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>目标<ul>
+<li>通过SuccinctStore提供的高效检索实现，实现一个减量不减质的缩水版lucene，构建一个单机上性能较高的搜索引擎。预期应该会比其他同类型的实现快上许多:)</li>
+</ul>
+</li>
+<li>缺陷<ul>
+<li>SuccinctStore的实现会导致顺序读的性能有些折扣，它更加适合随机读多的场景。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Database/">Database</a><a href="/tags/IR/">IR</a><a href="/tags/Compression/">Compression</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

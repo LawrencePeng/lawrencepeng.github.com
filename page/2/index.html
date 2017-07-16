@@ -61,6 +61,112 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/05/25/Elo-Rating-System/"><span>Elo Rating System</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/25/Elo-Rating-System/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-25T02:49:26.000Z">
+          2017-05-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>你是否有留意过很多的电子博弈游戏平台玩家创建账号后评分大多数是1500分（我印象中欢乐斗地主就是这样的。）。最近柯杰和AlphaGo的围棋3番战举世瞩目，柯杰作为人类目前围棋界世界第一的棋手，你是否知道他目前2800多的积分是如何得到呢？《社交网络》中男猪脚马克扎克伯格被女友甩了，气愤的他创建了Facemash，让用户选择他们觉得更漂亮的女生，那么如何在诸多选择中构建一个合理的排名呢？本文将介绍Elo Rating System，它是目前世界大量双人博弈运动的评分系统,比如可以看看这个新闻（<a href="https://bbs.hupu.com/13830203.html）。让我们开车吧。" target="_blank" rel="external">https://bbs.hupu.com/13830203.html）。让我们开车吧。</a></p>
+<ul>
+<li><p>历史</p>
+<ul>
+<li>作者Elo是顶级的世界象棋选手，他是美国国际象棋联邦的活跃成员，可是当时使用的Hackness Rating System有些不好使，所以Elo就自己造轮子造出了Elo Rating System。</li>
+</ul>
+</li>
+<li><p>原理</p>
+<ul>
+<li>不同选手的表现可能有高有底，所以Elo就把它想成了一个正态分布模型。（实际上后面经过测试大家发现Logistics函数更加合适，后面的简介将会更加Logistics函数版本来讲解。）</li>
+<li>Elo假定一个选手的水平均值（或许有超常发挥或者失误的情况，但是均值还是能够刻画他/她的水平的）</li>
+<li>通过比赛的结果评价选手的水平表现。（获胜用1代表，打平用.5代表，输用0代表。）</li>
+</ul>
+</li>
+<li><p>过程</p>
+<ul>
+<li><p>假定有一场比赛，选手A有评分Ra， 选手B有评分Rb。我们认为</p>
+<ul>
+<li>Ea = 1 / (1 + 10^(Rb - Ra) / MAX_SCORE_TO_TRANSFER)，Eb可由对称性和Ea + Eb == 1获得。</li>
+<li>其中Ea是A获胜的期望。</li>
+<li>在比赛结果出来后，可能会根据赛果做两人的分数移交，MAX_SCORE_TO_TRANSFER表明了一次比赛最多能移交的分数。</li>
+</ul>
+</li>
+<li>可以在一场比赛或者多场比赛之后，根据选手的表现调整他/她对应的Ex。<ul>
+<li>R’a = Ra + K(Sa - Ea) # K可以表示为波动系数。</li>
+<li>其中Ra是原评分，R’a是新评分，Ea是原来对这场比赛获胜的预期，Sa是他/她比赛的结果，赢了是1，输了是0，平了是0.5。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>细节考虑<ul>
+<li>分布模型<ul>
+<li>目前普遍认为Logistics函数比较适合描述所有选手的能力分布，但是也有系统使用正态分布。</li>
+</ul>
+</li>
+<li>变量K的选择<ul>
+<li>对于调整过程，K的选择是一个很tricky的过程，太大了可能选手分数波动太大，太小了可能反馈不足。目前很多系统使用对不同的水平层级的选手选择不同的K值，高手的K值比较小，新手或者蒟蒻的K值比较高。</li>
+</ul>
+</li>
+<li>是否零和游戏<ul>
+<li>如果按照初始的Elo Rating System，那么整个游戏就是个零和游戏，但是因为一个人总是开始的时候分数低，离场时水平提高，分数也高了。所以剩下的人平均分就会往下减。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>批评<ul>
+<li>只能赛果中了解信息<ul>
+<li>如果A和B一直打比赛经常打平，那么很可能他们相当，但是可能在这个过程中他们水平有了上升。后面A和某高手PK赢了，如果是使用Elo Rating System，如果B没有和高手比赛，B的评分就不会提升，这样是很不合理的。所以现代系统通常会希望识别到全局的信息，似乎更合理的做法是使用一个增量评分系统。让系统增加一个根据时间衰减的特性，但这样近期的比赛可能会让elo的估计偏差变大。长期不比赛复出的选手的评分可能会有很大的跳跃，不过总的来说也比纯elo更好。</li>
+</ul>
+</li>
+<li>其设计是为2人博弈设计，多人游戏使用它不太适合。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Rating-Math/">Rating, Math</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/05/24/搜索引擎的常见评价指标/"><span>搜索引擎的常见评价指标</span></a></h3>
     
   
