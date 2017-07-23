@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>如何给SuccinctStore添加正则引擎 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="大数据,DS">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="如何给SuccinctStore添加正则引擎"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>如何给SuccinctStore添加正则引擎</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/07/23/如何给SuccinctStore增加正则/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-07-23T13:50:06.000Z">
+          2017-07-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>引论<ul>
+<li>正则语言本身属于3型语言，原本按道理只需要一个简单的实现就可以了，但是这部分的水其实非常的深。<ul>
+<li>强化正则有back reference。</li>
+<li>需不需要支持jit</li>
+<li>要兼容POSIX标准？</li>
+<li>要做online parsing么？</li>
+<li>实现打算怎么做？</li>
+</ul>
+</li>
+<li>常见实现方式<ul>
+<li>回溯<ul>
+<li>性能可能会非常差，ReDOS的元凶。</li>
+</ul>
+</li>
+<li>NFA<ul>
+<li>很容易把正则语言parse成NFA，然而这样就很难做backreference了。</li>
+</ul>
+</li>
+<li>m-gram index<ul>
+<li>空间换时间</li>
+</ul>
+</li>
+<li>DFA<ul>
+<li>马马虎虎，也有NFA的局部问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>SuccinctStore Regex<ul>
+<li>SuccinctStore Regex选择把底层依赖的SuccinctStore当成BlackBox，因为SuccinctStore的Compressed Suffix Array的实现，其效果和m-gram时间复杂度差不多，但是因为SuccinctStore无需耗费多余的空间做index，其本身就是index，所以其在空间和时间中找到了比较好的平衡。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>参考资料<ul>
+<li>Russ Cox的<a href="https://swtch.com/~rsc/regexp/" target="_blank" rel="external">blog</a>提及了很多Regex的实现方面的好文章。</li>
+<li>《Parsing Technology》讲的也很透。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/大数据/">大数据</a><a href="/tags/DS/">DS</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
