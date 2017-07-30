@@ -47,9 +47,9 @@
   <nav class="site-navigation">
     <ul>
       
-        <li><a href="/">Home</a></li>
+        <li><a href="/">主页</a></li>
       
-        <li><a href="/archives">Archives</a></li>
+        <li><a href="/archives">归档</a></li>
       
     </ul>
   </nav>
@@ -57,6 +57,109 @@
 
     <main class="site-main posts-loop">
     
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/07/30/SuccinctStore深度解析-—-CSA实现/"><span>SuccinctStore深度解析 — CSA实现</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/07/30/SuccinctStore深度解析-—-CSA实现/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-07-30T03:40:39.000Z">
+          2017-07-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>前提<ul>
+<li>SuccinctStore依靠Compressed Suffix Array这一数据结构进行构建，实际上这也是因为CSA在空间使用上会优于CST。不过，如果没有从理论上明白它的一些时空复杂度，我相信是没人刚用的。要是突然我能构造出一个异常的输入样本，导致糟糕的怎么办？所以我们先来看下它的时间空间复杂度吧。</li>
+<li>时间复杂度：O(n)，实际上有很多好的CSA的构建算法都能达到这个上界，做竞赛的同学们可能会比较熟悉DC3算法。</li>
+<li>空间复杂度：O(n)，这个也没什么悬念的？真的吗？对于CSA来说，我们需要更加紧的上界，这里就要提出k-th order empirical entropy了。<ul>
+<li>zero-th order empirical entropy<ul>
+<li>要理解k-th order empirical entropy，首先要理解zero-th order empirical entropy。</li>
+<li>zero-th order empirical entropy是单独压缩每个单词最后能压缩的大小，可以看出，它并没有利用到上下文信息。</li>
+</ul>
+</li>
+<li>k-th order empirical entropy，高级的压缩器能利用这一上下文并根据这一上下文选出不同的codeword，k是这个上下文的大小，k越大，当然压缩率会越高，但是这个上下文表示所需要的空间也会相应变大，一般我们需要有个empirical的选值。公式大家可以g娘一下。</li>
+<li>CSA的空间复杂度为O(nHk(T)) + o(n)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>实现<ul>
+<li>目标<ul>
+<li>f = compress(file)</li>
+<li>append(f, buffer)</li>
+<li>buffer = extract(f, offset, len)</li>
+<li>cnt = count(f, str)</li>
+<li>offsets = search(f, str)</li>
+<li>offsets = rangesearch(f, str1, str2)</li>
+<li>ranges = wildcardsearch(f, prefix, suffix, dist)</li>
+<li>offsets = regex(f, pattern)</li>
+</ul>
+</li>
+<li>Flat Text To Semi-structured Data<ul>
+<li>一些简单的拓展就能让我们实现更加复杂的数据模型。</li>
+<li><img src="http://imglf1.nosdn.127.net/img/R0xHYjBEcUE1MmlpVmQ4TkQ2bm02KzdlcXFpWnFRV1JZaTViakw5ZWZVaTVkT29sbGpoc0tnPT0.png?imageView&amp;thumbnail=1680x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt=""></li>
+</ul>
+</li>
+<li>Suffix Array 运用<ul>
+<li>我们维护两个数组AoS2Input和Input2AoS，不难看出这两个互为反函数。</li>
+<li>当我们要search某Pattern p的时候，binary search p所在的两个端点，返回成区间形式即可。</li>
+<li>当我们要extract的时候，利用Input2AoS，直接是一个O(1)的操作。</li>
+</ul>
+</li>
+<li>压压压<ul>
+<li>原先的实现会需要维护O(nlog + n^2)的空间。所以考虑引入新的数组NextCharIdx，NextCharIdx(idx) -&gt; NextIndexInAoS。</li>
+<li>这样我们只需要mark每个单词出现的首个index即刻，后面需要定位的时候follow NextCharIdx，通过binary search到对应的字符Offset即可。</li>
+<li>对于AoS2Input和Input2AoS两个输出，我们采用取样的方法减小其大小。默认选择这两个数组的大小为原数组的1/32。</li>
+<li>因为NextCharIdx本身是单调递增的，所以我们可以选择一些编码方式做DeltaCompression， 这里我使用的是Elas Gamma Code。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Database/">Database</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
   <article>
 
   
@@ -220,7 +323,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Database/">Database</a><a href="/tags/IR/">IR</a><a href="/tags/Compression/">Compression</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a>
+        <a href="/tags/Database/">Database</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a><a href="/tags/IR/">IR</a><a href="/tags/Compression/">Compression</a>
     </span>
     
 
@@ -723,83 +826,11 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/05/27/Natural-Mergesort/"><span>Natural Mergesort</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/05/27/Natural-Mergesort/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-05-27T04:36:41.000Z">
-          2017-05-27
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ul>
-<li><p>目的</p>
-<ul>
-<li>普通MergeSort对于原本有序或者接近有序的数组的表现不好，所以引出了Natural Mergesort。</li>
-</ul>
-</li>
-<li><p>过程</p>
-<ul>
-<li>和MergeSort自顶向下的过程不同，Natural Mergesort选择了相反的方向。</li>
-</ul>
-</li>
-<li><p>代码</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function">ForwardIterator <span class="title">SortedRangeEnd</span><span class="params">(ForwardIterator begin, ForwardIterator end, Comparator comp)</span> </span>&#123;</div><div class="line">    <span class="comment">/* Edge case - if the input is empty, we're done. */</span></div><div class="line">    <span class="keyword">if</span> (begin == end) <span class="keyword">return</span> end;</div><div class="line"></div><div class="line">    <span class="comment">/* Get an iterator that's one step ahead of begin. */</span></div><div class="line">    ForwardIterator next = begin; ++next;</div><div class="line"></div><div class="line">    <span class="comment">/* Keep marching these iterators forward until we find a mismatch or</span></div><div class="line">     * hit the end.  A mismatch occurs when the element after the current</div><div class="line">     * is strictly less than the current element.</div><div class="line">     */</div><div class="line">    <span class="keyword">for</span> (; next != end &amp;&amp; !comp(*next, *begin); ++next, ++begin)</div><div class="line">      ;</div><div class="line"></div><div class="line">    <span class="comment">/* The above loop stops either when next is the end of the sequence or</span></div><div class="line">     * when next is the crossover point.  In either case, return next.</div><div class="line">     */</div><div class="line">    <span class="keyword">return</span> next;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>这个函数是来找到已经排好序的范围。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">Merge</span><span class="params">(ForwardIterator begin, ForwardIterator mid,</span></span></div><div class="line">             ForwardIterator end, Comparator comp) &#123;</div><div class="line">    <span class="comment">/* Determine the type of the element being iterated over. */</span></div><div class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="built_in">std</span>::iterator_traits&lt;ForwardIterator&gt;::value_type T;</div><div class="line"></div><div class="line">    <span class="comment">/* Create a vector of Ts that will hold the merged sequence. */</span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;T&gt; merge;</div><div class="line"></div><div class="line">    <span class="comment">/* Continuously choose the smaller of the two to go in front until some</span></div><div class="line">     * range is consumed.</div><div class="line">     */</div><div class="line">    ForwardIterator one = begin, two = mid;</div><div class="line">    <span class="keyword">while</span> (one != mid &amp;&amp; two != end) &#123;</div><div class="line">      <span class="keyword">if</span> (comp(*one, *two)) &#123; <span class="comment">// First sequence has smaller element</span></div><div class="line">        merge.push_back(*one);</div><div class="line">        ++one;</div><div class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// Second sequence has smaller element.</span></div><div class="line">        merge.push_back(*two);</div><div class="line">        ++two;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Once one of the sequences has been exhausted, one of two cases holds:</span></div><div class="line">     *</div><div class="line">     * 1. The first sequence was consumed.  In that case, the rest of the</div><div class="line">     *    second sequence is valid and we can just copy the merged sequence</div><div class="line">     *    in front of it.</div><div class="line">     * 2. The second sequence was consumed.  In that case, we copy the rest</div><div class="line">     *    of the first sequence into the merged sequence, then write the</div><div class="line">     *    merged sequence back.</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (two == end)</div><div class="line">      merge.insert(merge.end(), one, mid);</div><div class="line"></div><div class="line">    <span class="built_in">std</span>::copy(merge.begin(), merge.end(), begin);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>稀疏平常的merge部分。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">NaturalMergesort(ForwardIterator begin, ForwardIterator end,</div><div class="line">                      Comparator comp) &#123;</div><div class="line"><span class="keyword">if</span> (begin == end) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">  <span class="comment">/* Track whether the current iteration of the algorithm has made any</span></div><div class="line">   * changes.  If it didn't, then we can finish early.</div><div class="line">   */</div><div class="line">  <span class="keyword">bool</span> haveMerged;</div><div class="line"></div><div class="line">  <span class="comment">/* Continuously loop, merging together ranges until the input is fully</span></div><div class="line">   * sorted.</div><div class="line">   */</div><div class="line">  <span class="keyword">do</span> &#123;</div><div class="line">    <span class="comment">/* We have not yet merged anything, so clear this flag. */</span></div><div class="line">    haveMerged = <span class="literal">false</span>;</div><div class="line"></div><div class="line">    <span class="comment">/* Scan forward in the loop, looking for adjacent pairs of sorted ranges</span></div><div class="line">     * and merging them.  </div><div class="line">     */</div><div class="line">    <span class="keyword">for</span> (ForwardIterator itr = begin; itr != end; ) &#123;</div><div class="line">      <span class="comment">/* See how far this range extends. */</span></div><div class="line">      ForwardIterator rangeEnd = SortedRangeEnd(itr, end, comp);</div><div class="line"></div><div class="line">      <span class="comment">/* If we hit the end of the range, we're done with this iteration. */</span></div><div class="line">      <span class="keyword">if</span> (rangeEnd == end) <span class="keyword">break</span>;</div><div class="line"></div><div class="line">      <span class="comment">/* See where the end of that range is. */</span></div><div class="line">      ForwardIterator nextRangeEnd = SortedRangeEnd(rangeEnd, end, comp);</div><div class="line"></div><div class="line">      <span class="comment">/* Merge this range with the range after it. */</span></div><div class="line">      Merge(itr, rangeEnd, nextRangeEnd, comp);</div><div class="line">      </div><div class="line">      <span class="comment">/* Flag that we did at least one merge so we don't stop early. */</span></div><div class="line">      haveMerged = <span class="literal">true</span>;</div><div class="line"></div><div class="line">      <span class="comment">/* Advance the iterator to the start of the next sequence, which is</span></div><div class="line">       * directly after the end of the second sorted range.</div><div class="line">       */</div><div class="line">      itr = nextRangeEnd;</div><div class="line">    &#125;</div><div class="line">  &#125; <span class="keyword">while</span> (haveMerged);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到只是一个很小的更改，就能让我们成功降低mergesort最好时间复杂度，真正让mergesort更加实用了。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Algo/">Algo</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
   
-  <a href="/page/2/" class="pagination-next">Next</a>
+  <a href="/page/2/" class="pagination-next">下一页</a>
   
 </nav>
     </main>

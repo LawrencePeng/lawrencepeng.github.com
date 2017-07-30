@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>SuccinctStore深度解析 — CSA实现 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="Database,Succinct Data Structure">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="SuccinctStore深度解析 — CSA实现"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>SuccinctStore深度解析 — CSA实现</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/07/30/SuccinctStore深度解析-—-CSA实现/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-07-30T03:40:39.000Z">
+          2017-07-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>前提<ul>
+<li>SuccinctStore依靠Compressed Suffix Array这一数据结构进行构建，实际上这也是因为CSA在空间使用上会优于CST。不过，如果没有从理论上明白它的一些时空复杂度，我相信是没人刚用的。要是突然我能构造出一个异常的输入样本，导致糟糕的怎么办？所以我们先来看下它的时间空间复杂度吧。</li>
+<li>时间复杂度：O(n)，实际上有很多好的CSA的构建算法都能达到这个上界，做竞赛的同学们可能会比较熟悉DC3算法。</li>
+<li>空间复杂度：O(n)，这个也没什么悬念的？真的吗？对于CSA来说，我们需要更加紧的上界，这里就要提出k-th order empirical entropy了。<ul>
+<li>zero-th order empirical entropy<ul>
+<li>要理解k-th order empirical entropy，首先要理解zero-th order empirical entropy。</li>
+<li>zero-th order empirical entropy是单独压缩每个单词最后能压缩的大小，可以看出，它并没有利用到上下文信息。</li>
+</ul>
+</li>
+<li>k-th order empirical entropy，高级的压缩器能利用这一上下文并根据这一上下文选出不同的codeword，k是这个上下文的大小，k越大，当然压缩率会越高，但是这个上下文表示所需要的空间也会相应变大，一般我们需要有个empirical的选值。公式大家可以g娘一下。</li>
+<li>CSA的空间复杂度为O(nHk(T)) + o(n)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>实现<ul>
+<li>目标<ul>
+<li>f = compress(file)</li>
+<li>append(f, buffer)</li>
+<li>buffer = extract(f, offset, len)</li>
+<li>cnt = count(f, str)</li>
+<li>offsets = search(f, str)</li>
+<li>offsets = rangesearch(f, str1, str2)</li>
+<li>ranges = wildcardsearch(f, prefix, suffix, dist)</li>
+<li>offsets = regex(f, pattern)</li>
+</ul>
+</li>
+<li>Flat Text To Semi-structured Data<ul>
+<li>一些简单的拓展就能让我们实现更加复杂的数据模型。</li>
+<li><img src="http://imglf1.nosdn.127.net/img/R0xHYjBEcUE1MmlpVmQ4TkQ2bm02KzdlcXFpWnFRV1JZaTViakw5ZWZVaTVkT29sbGpoc0tnPT0.png?imageView&amp;thumbnail=1680x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt=""></li>
+</ul>
+</li>
+<li>Suffix Array 运用<ul>
+<li>我们维护两个数组AoS2Input和Input2AoS，不难看出这两个互为反函数。</li>
+<li>当我们要search某Pattern p的时候，binary search p所在的两个端点，返回成区间形式即可。</li>
+<li>当我们要extract的时候，利用Input2AoS，直接是一个O(1)的操作。</li>
+</ul>
+</li>
+<li>压压压<ul>
+<li>原先的实现会需要维护O(nlog + n^2)的空间。所以考虑引入新的数组NextCharIdx，NextCharIdx(idx) -&gt; NextIndexInAoS。</li>
+<li>这样我们只需要mark每个单词出现的首个index即刻，后面需要定位的时候follow NextCharIdx，通过binary search到对应的字符Offset即可。</li>
+<li>对于AoS2Input和Input2AoS两个输出，我们采用取样的方法减小其大小。默认选择这两个数组的大小为原数组的1/32。</li>
+<li>因为NextCharIdx本身是单调递增的，所以我们可以选择一些编码方式做DeltaCompression， 这里我使用的是Elas Gamma Code。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Database/">Database</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
