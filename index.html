@@ -126,7 +126,7 @@
 <li>原先的实现会需要维护O(nlog + n^2)的空间。所以考虑引入新的数组NextCharIdx，NextCharIdx(idx) -&gt; NextIndexInAoS。</li>
 <li>这样我们只需要mark每个单词出现的首个index即刻，后面需要定位的时候follow NextCharIdx，通过binary search到对应的字符Offset即可。</li>
 <li>对于AoS2Input和Input2AoS两个输出，我们采用取样的方法减小其大小。默认选择这两个数组的大小为原数组的1/32。</li>
-<li>因为NextCharIdx本身是单调递增的，所以我们可以选择一些编码方式做DeltaCompression， 这里我使用的是Elas Gamma Code。</li>
+<li>因为NextCharIdx本身是单调递增的，所以我们可以选择一些编码方式做DeltaCompression， 这里我使用的是Elias Gamma Code。</li>
 </ul>
 </li>
 </ul>
