@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>第 2 页 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+  <title>Page 2 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
 
   
   <meta name="author" content="LawrencePeng">
@@ -47,9 +47,9 @@
   <nav class="site-navigation">
     <ul>
       
-        <li><a href="/">主页</a></li>
+        <li><a href="/">Home</a></li>
       
-        <li><a href="/archives">归档</a></li>
+        <li><a href="/archives">Archives</a></li>
       
     </ul>
   </nav>
@@ -57,6 +57,97 @@
 
     <main class="site-main posts-loop">
     
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/05/28/ZigZag编码/"><span>Zigzag编码</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/28/ZigZag编码/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-28T08:25:05.000Z">
+          2017-05-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>目的<ul>
+<li>基于经验，我们需要序列化的数据，通常小数（绝对值）多，大数少，所以出现了ZigZag编码，来减少编码数据的大小。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>过程</p>
+<ul>
+<li><p>双射</p>
+<ul>
+<li><p>构建一个F(int) -&gt; int，让绝对值小的数尽量小，绝对值大的数尽量大。</p>
+</li>
+<li><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">n = (n &lt;&lt; <span class="number">1</span>) ^ (n &gt;&gt; <span class="number">31</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>example</p>
+<ul>
+<li>0 -&gt; 0</li>
+<li>-1 -&gt; 1</li>
+<li>1 -&gt; 2</li>
+<li>-2 -&gt; 3</li>
+<li>2 -&gt; 4</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>变长编码</p>
+<ul>
+<li><p>代码</p>
+</li>
+<li><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">encodeInt</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">byte</span>[] buf, <span class="keyword">int</span> pos)</span> </span>&#123;</div><div class="line"><span class="comment">// move sign to low-order bit, and flip others if negative</span></div><div class="line">  n = (n &lt;&lt; <span class="number">1</span>) ^ (n &gt;&gt; <span class="number">31</span>);</div><div class="line">  <span class="keyword">int</span> start = pos;</div><div class="line">  <span class="keyword">if</span> ((n &amp; ~<span class="number">0x7F</span>) != <span class="number">0</span>) &#123;</div><div class="line">    buf[pos++] = (<span class="keyword">byte</span>)((n | <span class="number">0x80</span>) &amp; <span class="number">0xFF</span>);</div><div class="line">    n &gt;&gt;&gt;= <span class="number">7</span>;</div><div class="line">    <span class="keyword">if</span> (n &gt; <span class="number">0x7F</span>) &#123;</div><div class="line">      buf[pos++] = (<span class="keyword">byte</span>)((n | <span class="number">0x80</span>) &amp; <span class="number">0xFF</span>);</div><div class="line">      n &gt;&gt;&gt;= <span class="number">7</span>;</div><div class="line">      <span class="keyword">if</span> (n &gt; <span class="number">0x7F</span>) &#123;</div><div class="line">        buf[pos++] = (<span class="keyword">byte</span>)((n | <span class="number">0x80</span>) &amp; <span class="number">0xFF</span>);</div><div class="line">        n &gt;&gt;&gt;= <span class="number">7</span>;</div><div class="line">        <span class="keyword">if</span> (n &gt; <span class="number">0x7F</span>) &#123;</div><div class="line">          buf[pos++] = (<span class="keyword">byte</span>)((n | <span class="number">0x80</span>) &amp; <span class="number">0xFF</span>);</div><div class="line">          n &gt;&gt;&gt;= <span class="number">7</span>;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125; </div><div class="line">  buf[pos++] = (<span class="keyword">byte</span>) n;</div><div class="line">  <span class="keyword">return</span> pos - start;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">等价于：</div><div class="line">while</div><div class="line">    if 第七位满1或有进位:</div><div class="line">        n |= 0x80;</div><div class="line">        取低位的8位作为一个byte写入buf;</div><div class="line">        n &gt;&gt;&gt;=7（无符号右移7位，在高位插0）;</div><div class="line">    else:</div><div class="line">        取低位的8位作为一个byte写入buf</div><div class="line">end</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Code/">Code</a><a href="/tags/Zigzag/">Zigzag</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
   <article>
 
   
@@ -510,7 +601,7 @@
 
 <nav class="pagination">
   
-  <a href="/" class="pagination-prev">上一页</a>
+  <a href="/" class="pagination-prev">Prev</a>
   
   
 </nav>
