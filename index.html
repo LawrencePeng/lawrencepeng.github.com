@@ -63,6 +63,79 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/08/10/CRDT/"><span></span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/08/10/CRDT/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-08-10T12:40:21.000Z">
+          2017-08-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <hr>
+<h2 id="CRDT-—-A-Way-to-implement-eventual-consistency"><a href="#CRDT-—-A-Way-to-implement-eventual-consistency" class="headerlink" title="CRDT — A Way to implement eventual consistency"></a>CRDT — A Way to implement eventual consistency</h2><ul>
+<li>BlahBlahBlah<ul>
+<li>很多人都应该听过<a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="external">CAP Theorem</a>，如果你没有，理解这篇文章可能有点费劲，推荐你看看。</li>
+<li>如果你选择了AP，那么你最终可能会面临的问题就是你要不要达到最终一致性了。</li>
+<li>如果你选择了否，那么这篇文章可能不对应你的场景了。</li>
+<li>如果你选择了是，那么如何实现最终一致性呢？这就导出了CRDT。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>原理<ul>
+<li>有两类的CRDT。</li>
+<li>CmRDT<ul>
+<li>结点和结点传输的是符合交换律的操作，如果不符合幂等性，那么你可能需要依赖你的通讯机制能够达到extract once message delivered的要求。</li>
+<li>Pure CmRDT可以减少所需要传输的metadata的大小。</li>
+</ul>
+</li>
+<li>CvRDT<ul>
+<li>结点和结点传输的是状态，存在一个算子merge: (SA, SB) =&gt; SC,收到传输的状态就和自己存储的状态merge，这个算子必须满足交换律、结合律和幂等律，所以如果用抽象代数的角度形容地话，其使整个状态系统形成了一个<a href="https://en.wikipedia.org/wiki/Semilattice" target="_blank" rel="external">半格</a>。所以最终只要能接受到其他所有节点的新状态，那么永远能保证系统最终会收敛。这样也去除了对于CmRDT的底层通讯机制依赖，但是因为传递的是状态，所以最后传输可能有点大。虽然还有优化的可能性。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>例子我就不举了，大家G嫂一下就好了。</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/08/04/为什么你应该对生活充满希望？/"><span>为什么你应该对生活充满希望？</span></a></h3>
     
   
@@ -119,7 +192,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Cryptology/">Cryptology</a><a href="/tags/Math/">Math</a><a href="/tags/Probability/">Probability</a>
+        <a href="/tags/Math/">Math</a><a href="/tags/Cryptology/">Cryptology</a><a href="/tags/Probability/">Probability</a>
     </span>
     
 
@@ -727,74 +800,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/Go/">Go</a><a href="/tags/Java/">Java</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/06/02/拉普拉斯平滑和M-估计/"><span>拉普拉斯平滑和M-估计</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/06/02/拉普拉斯平滑和M-估计/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-06-01T16:24:09.000Z">
-          2017-06-02
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ul>
-<li>目的<ul>
-<li>某事件发生的频数过低时使用MLE会导致极差的估计偏差，拉普拉斯平滑和M-估计都是为了解决这一问题。</li>
-</ul>
-</li>
-<li>拉普拉斯平滑<ul>
-<li>相当于假设均匀分布的先验的情况下和后验做blending，实际上并没有如此简单。但是这种解释有诸多不合理，想要了解其中的原理可以看看<a href="https://zhuanlan.zhihu.com/p/24291822" target="_blank" rel="external">这篇文章</a>。我花了一个小时才看懂，发现概率论得好好补补了。。。</li>
-</ul>
-</li>
-<li>M-估计<ul>
-<li>P=(r + Pa * m)/(n + m),其中m为估计的值。</li>
-<li>或者P=(n/(n+m)) <em> (r/n) + (m/(n+m)) </em> (Pa)</li>
-<li>不难看出其实对MLE和拉普拉斯平滑的一种综合。</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Math/">Math</a><a href="/tags/Machine-Learning/">Machine Learning</a>
     </span>
     
 
