@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>谢天谢地，HPKP到了 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="Security,HPKP,HTTP,Web">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="谢天谢地，HPKP到了"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>谢天谢地，HPKP到了</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/10/28/谢天谢地，HPKP倒了。/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-10-28T06:54:30.900Z">
+          2017-10-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>What<ul>
+<li>HPKP是一种Trust on First Use的减少CA被攻击的印象的技术。</li>
+</ul>
+</li>
+<li>How<ul>
+<li>第一次用户访问的时候通过meta元素或消息头告诉client在未来某段时间只信任xxx公钥，如果后面访问server没有这个公钥，至少标识给用户看看。</li>
+</ul>
+</li>
+<li>Why<ul>
+<li>因为CA太多了，如果一家gg了，client得到的证书都不一定有用。</li>
+<li>HPKP这种方式可以保证只相信某些公钥。</li>
+</ul>
+</li>
+<li>What<ul>
+<li>最近Chrome宣布18年要<a href="https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ" target="_blank" rel="external">完全移除HPKP</a>。除了HPKP本身的问题外，大家可以想想这种机制的问题何在？</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Security/">Security</a><a href="/tags/HPKP/">HPKP</a><a href="/tags/HTTP/">HTTP</a><a href="/tags/Web/">Web</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

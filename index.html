@@ -61,6 +61,77 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/10/28/谢天谢地，HPKP倒了。/"><span>谢天谢地，HPKP到了</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/10/28/谢天谢地，HPKP倒了。/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-10-28T06:54:30.900Z">
+          2017-10-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>What<ul>
+<li>HPKP是一种Trust on First Use的减少CA被攻击的印象的技术。</li>
+</ul>
+</li>
+<li>How<ul>
+<li>第一次用户访问的时候通过meta元素或消息头告诉client在未来某段时间只信任xxx公钥，如果后面访问server没有这个公钥，至少标识给用户看看。</li>
+</ul>
+</li>
+<li>Why<ul>
+<li>因为CA太多了，如果一家gg了，client得到的证书都不一定有用。</li>
+<li>HPKP这种方式可以保证只相信某些公钥。</li>
+</ul>
+</li>
+<li>What<ul>
+<li>最近Chrome宣布18年要<a href="https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ" target="_blank" rel="external">完全移除HPKP</a>。除了HPKP本身的问题外，大家可以想想这种机制的问题何在？</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Security/">Security</a><a href="/tags/HPKP/">HPKP</a><a href="/tags/HTTP/">HTTP</a><a href="/tags/Web/">Web</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/09/27/给CS新生看的老饼的心声/"><span>给CS新生看的老饼的心声</span></a></h3>
     
   
@@ -918,71 +989,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/Database/">Database</a><a href="/tags/IR/">IR</a><a href="/tags/Compression/">Compression</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/06/09/CountMin-Sketch/"><span>CountMin Sketch</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/06/09/CountMin-Sketch/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-06-09T13:35:07.000Z">
-          2017-06-09
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ul>
-<li>目的：在流计算的场景中，我们经常需要做Freq Counting，而普通的HashTable、Counted BF都有Linear的空间复杂度，CountMin Sketch能让你把性能降到Sub Linear，当然可能会有误差。</li>
-<li>过程：<ul>
-<li>构建一个m * d的二维数组，每一行都有一个hash函数控制。</li>
-<li>遍历（添加）每个元素时，算出d个0 - (m - 1)的hash value，对应d个槽自增下</li>
-<li>如果要计算某个值的Freq，依然hash出那d个value，去对应槽中值最小的。</li>
-</ul>
-</li>
-<li>性质<ul>
-<li>很明显这个一个只会高估不会低估的过程，对于在长尾上的元素，很可能因为其他元素也映射到了一样的槽中，产生大量冲突，造成误差，所以也有Count-Min-Mean Sketch，这里就不介绍了，有兴趣的可以自己查阅相关资料。 </li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/大数据/">大数据</a><a href="/tags/DS/">DS</a>
     </span>
     
 
