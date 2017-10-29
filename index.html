@@ -61,6 +61,59 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/10/30/Dropbox-Web-Server优化笔记/"><span>Dropbox Web Server优化笔记</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/10/30/Dropbox-Web-Server优化笔记/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-10-29T17:11:13.418Z">
+          2017-10-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><a href="https://www.evernote.com/l/Ako9JcTFGjRKuawWE0fGG_AR7tata12cZ8M" target="_blank" rel="external">https://www.evernote.com/l/Ako9JcTFGjRKuawWE0fGG_AR7tata12cZ8M</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Dropbox/">Dropbox</a><a href="/tags/Infra/">Infra</a><a href="/tags/Optimization/">Optimization</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/10/28/谢天谢地，HPKP倒了。/"><span>谢天谢地，HPKP倒了</span></a></h3>
     
   
@@ -899,96 +952,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/Database/">Database</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a><a href="/tags/IR/">IR</a><a href="/tags/Compression/">Compression</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/07/10/如何构建一个Query On Compressed Data的数据库/"><span>如何Query on Compressed Data?</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/07/10/如何构建一个Query On Compressed Data的数据库/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-07-10T06:15:58.000Z">
-          2017-07-10
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ul>
-<li>常见做法：<ul>
-<li>使用通用压缩技术<ul>
-<li>snappy、lz4</li>
-</ul>
-</li>
-<li>FM-Index<ul>
-<li>一种基于BWT的Self-Index技术</li>
-</ul>
-</li>
-<li>Succinct Data Structure<ul>
-<li>一种以信息论下界压缩数据结构的方式。</li>
-<li>目前使用这种方法</li>
-<li>缺点是构造速度慢，immutable。</li>
-<li>所以选择使用Duo Store的方式解决</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>支持正则搜索<ul>
-<li>目前是写了个正则parser，对应interpret到Succinct Store的底层api。</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>优势<ul>
-<li>放更多数据到内存</li>
-<li>无需索引设计，或者数据就是索引本身</li>
-<li>用于搜索引擎无需分词降低命中率</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>劣势<ul>
-<li>顺序读性能下降。</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Database/">Database</a><a href="/tags/IR/">IR</a><a href="/tags/Compression/">Compression</a>
     </span>
     
 
