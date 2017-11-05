@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Page 2 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+  <title>第 2 页 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
 
   
   <meta name="author" content="LawrencePeng">
@@ -47,9 +47,9 @@
   <nav class="site-navigation">
     <ul>
       
-        <li><a href="/">Home</a></li>
+        <li><a href="/">主页</a></li>
       
-        <li><a href="/archives">Archives</a></li>
+        <li><a href="/archives">归档</a></li>
       
     </ul>
   </nav>
@@ -57,6 +57,103 @@
 
     <main class="site-main posts-loop">
     
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/07/23/如何给SuccinctStore增加正则/"><span>如何给SuccinctStore添加正则引擎</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/07/23/如何给SuccinctStore增加正则/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-07-23T13:50:06.000Z">
+          2017-07-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li>引论<ul>
+<li>正则语言本身属于3型语言，原本按道理只需要一个简单的实现就可以了，但是这部分的水其实非常的深。<ul>
+<li>强化正则有back reference。</li>
+<li>需不需要支持jit</li>
+<li>要兼容POSIX标准？</li>
+<li>要做online parsing么？</li>
+<li>实现打算怎么做？</li>
+</ul>
+</li>
+<li>常见实现方式<ul>
+<li>回溯<ul>
+<li>性能可能会非常差，ReDOS的元凶。</li>
+</ul>
+</li>
+<li>NFA<ul>
+<li>很容易把正则语言parse成NFA，然而这样就很难做backreference了。</li>
+</ul>
+</li>
+<li>m-gram index<ul>
+<li>空间换时间</li>
+</ul>
+</li>
+<li>DFA<ul>
+<li>马马虎虎，也有NFA的局部问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>SuccinctStore Regex<ul>
+<li>SuccinctStore Regex选择把底层依赖的SuccinctStore当成BlackBox，因为SuccinctStore的Compressed Suffix Array的实现，其效果和m-gram时间复杂度差不多，但是因为SuccinctStore无需耗费多余的空间做index，其本身就是index，所以其在空间和时间中找到了比较好的平衡。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>参考资料<ul>
+<li>Russ Cox的<a href="https://swtch.com/~rsc/regexp/" target="_blank" rel="external">blog</a>提及了很多Regex的实现方面的好文章。</li>
+<li>《Parsing Technology》讲的也很透。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/DS/">DS</a><a href="/tags/Parser/">Parser</a><a href="/tags/Database/">Database</a><a href="/tags/regex/">regex</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
   <article>
 
   
@@ -698,85 +795,13 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/05/26/Pearson-s-hash/"><span>Pearson&#39;s hash</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/05/26/Pearson-s-hash/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-05-26T04:33:17.000Z">
-          2017-05-26
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>今天懒癌烦了，灌篇水文吧。</p>
-<ul>
-<li><p>目的</p>
-<ul>
-<li>为8bit寄存器设计的哈希函数。</li>
-</ul>
-</li>
-<li><p>效果</p>
-<ul>
-<li>非常简单</li>
-<li>在资料受限的机器上也能快速执行</li>
-<li>想要故意构造哈希冲突不是很容易</li>
-<li>两个只有一个字符不一样的字符串不会冲突</li>
-</ul>
-</li>
-<li><p>代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> random <span class="keyword">import</span> shuffle</div><div class="line"></div><div class="line">example_table = range(<span class="number">0</span>, <span class="number">256</span>)</div><div class="line">shuffle(example_table)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hash8</span><span class="params">(message, table)</span>:</span></div><div class="line">    hash = len(message) % <span class="number">255</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> message:</div><div class="line">        hash = table[(hash+ord(i)) % <span class="number">255</span>]</div><div class="line">    <span class="keyword">return</span> hash</div></pre></td></tr></table></figure>
-<p>​</p>
-</li>
-</ul>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Hash/">Hash</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
-  <a href="/" class="pagination-prev">Prev</a>
+  <a href="/" class="pagination-prev">上一页</a>
   
   
-  <a href="/page/3/" class="pagination-next">Next</a>
+  <a href="/page/3/" class="pagination-next">下一页</a>
   
 </nav>
     </main>

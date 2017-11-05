@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Scala和Python的线性化算法 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="Algo,Scala,Python,Linearization">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Scala和Python的线性化算法"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Scala和Python的线性化算法</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/11/05/Scala和Python的线性化算法方案/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-11-05T15:31:37.332Z">
+          2017-11-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>Scala的特性需要解决菱形继承问题，恰好Py也需要，但是两者却使用了不一样的方案，我们来看看究竟。</p>
+<ul>
+<li><p>How</p>
+<ul>
+<li><p>Scala</p>
+<ul>
+<li><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">extends</span> <span class="title">C1</span> <span class="keyword">with</span> <span class="title">C2</span> <span class="keyword">with</span> ... <span class="keyword">with</span> <span class="title">Cn</span></span></div></pre></td></tr></table></figure>
+</li>
+<li><p>lin(C) = C &gt;&gt; lin(C1) &gt;&gt; lin(C2) &gt;&gt; … &gt;&gt; lin(Cn)</p>
+</li>
+<li><p>其中&gt;&gt;代表串联并去除重复项，右侧胜出。</p>
+</li>
+</ul>
+</li>
+<li><p>Python</p>
+<ul>
+<li><p>经典的C3算法。</p>
+<ul>
+<li><p>lin(C) = merge(C, lin(C1), lin(C2), …, lin (Cn), C1, C2, …, Cn)</p>
+</li>
+<li><p>merge实现为：</p>
+<ul>
+<li>持续的选出最好的头直到list枯竭，最好的头不可以在除了开头的list中位于最后一位。一个好的头可以在多个list中位于第一个，但不能再其他位置出现(除第一个)。</li>
+<li>可以记忆化实现。</li>
+</ul>
+</li>
+<li><p>demo</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">假定有如下的类继承体系：</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="title">extends</span> <span class="title">O</span></span></div><div class="line"><span class="class"><span class="title">class</span> <span class="title">B</span> <span class="title">extends</span> <span class="title">O</span></span></div><div class="line"><span class="class"><span class="title">class</span> <span class="title">C</span> <span class="title">extends</span> <span class="title">O</span></span></div><div class="line"><span class="class"><span class="title">class</span> <span class="title">D</span> <span class="title">extends</span> <span class="title">O</span></span></div><div class="line"><span class="class"><span class="title">class</span> <span class="title">E</span> <span class="title">extends</span> <span class="title">O</span></span></div><div class="line">class K1 extends A, B, C</div><div class="line">class K2 extends D, B, E</div><div class="line">class K3 extends D, A</div><div class="line">class Z extends K1, K2, K3</div><div class="line"></div><div class="line">那么C3运算过程如下：</div><div class="line"></div><div class="line">L(O)  := [O]                                                // the linearization of O <span class="keyword">is</span> trivially the singleton list [O], because O has no parents</div><div class="line"></div><div class="line">L(A)  := [A] + merge(L(O), [O])                             // the linearization of A <span class="keyword">is</span> A plus the merge of its parents<span class="string">' linearizations with the list of parents...</span></div><div class="line"><span class="string">       = [A] + merge([O], [O])</span></div><div class="line"><span class="string">       = [A, O]                                             // ...which simply prepends A to its single parent'</span>s linearization</div><div class="line"></div><div class="line">L(B)  := [B, O]                                             // linearizations of B, C, D <span class="keyword">and</span> E are computed similar to that of A</div><div class="line">L(C)  := [C, O]</div><div class="line">L(D)  := [D, O]</div><div class="line">L(E)  := [E, O]</div><div class="line"></div><div class="line">L(K1) := [K1] + merge(L(A), L(B), L(C), [A, B, C])          // first, find the linearizations of K1<span class="string">'s parents, L(A), L(B), and L(C), and merge them with the parent list [A, B, C]</span></div><div class="line"><span class="string">       = [K1] + merge([A, O], [B, O], [C, O], [A, B, C])    // class A is a good candidate for the first merge step, because it only appears as the head of the first and last lists</span></div><div class="line"><span class="string">       = [K1, A] + merge([O], [B, O], [C, O], [B, C])       // class O is not a good candidate for the next merge step, because it also appears in the tails of list 2 and 3, but...</span></div><div class="line"><span class="string">       = [K1, A, B] + merge([O], [O], [C, O], [C])          // ...class B qualified, and so does class C; class O still appears in the tail of list 3</span></div><div class="line"><span class="string">       = [K1, A, B, C] + merge([O], [O], [O])               // finally, class O is a valid candidate, which also exhausts all remaining lists</span></div><div class="line"><span class="string">       = [K1, A, B, C, O]</span></div><div class="line"><span class="string"></span></div><div class="line"><span class="string">L(K2) := [K2] + merge(L(D), L(B), L(E), [D, B, E])</span></div><div class="line"><span class="string">       = [K2] + merge([D, O], [B, O], [E, O], [D, B, E])    // select D</span></div><div class="line"><span class="string">       = [K2, D] + merge([O], [B, O], [E, O], [B, E])       // fail O, select B</span></div><div class="line"><span class="string">       = [K2, D, B] + merge([O], [O], [E, O], [E])          // fail O, select E</span></div><div class="line"><span class="string">       = [K2, D, B, E] + merge([O], [O], [O])               // select O</span></div><div class="line"><span class="string">       = [K2, D, B, E, O]</span></div><div class="line"><span class="string"></span></div><div class="line"><span class="string">L(K3) := [K3] + merge(L(D), L(A), [D, A])</span></div><div class="line"><span class="string">       = [K3] + merge([D, O], [A, O], [D, A])               // select D</span></div><div class="line"><span class="string">       = [K3, D] + merge([O], [A, O], [A])                  // fail O, select A</span></div><div class="line"><span class="string">       = [K3, D, A] + merge([O], [O])                       // select O</span></div><div class="line"><span class="string">       = [K3, D, A, O]</span></div><div class="line"><span class="string"></span></div><div class="line"><span class="string">L(Z)  := [Z] + merge(L(K1), L(K2), L(K3), [K1, K2, K3])</span></div><div class="line"><span class="string">       = [Z] + merge([K1, A, B, C, O], [K2, D, B, E, O], [K3, D, A, O], [K1, K2, K3])    // select K1</span></div><div class="line"><span class="string">       = [Z, K1] + merge([A, B, C, O], [K2, D, B, E, O], [K3, D, A, O], [K2, K3])        // fail A, select K2</span></div><div class="line"><span class="string">       = [Z, K1, K2] + merge([A, B, C, O], [D, B, E, O], [K3, D, A, O], [K3])            // fail A, fail D, select K3</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3] + merge([A, B, C, O], [D, B, E, O], [D, A, O])                  // fail A, select D</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3, D] + merge([A, B, C, O], [B, E, O], [A, O])                     // select A</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3, D, A] + merge([B, C, O], [B, E, O], [O])                        // select B</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3, D, A, B] + merge([C, O], [E, O], [O])                           // select C</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3, D, A, B, C] + merge([O], [E, O], [O])                           // fail O, select E</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3, D, A, B, C, E] + merge([O], [O], [O])                           // select O</span></div><div class="line"><span class="string">       = [Z, K1, K2, K3, D, A, B, C, E, O]                                               // done</span></div></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Algo/">Algo</a><a href="/tags/Scala/">Scala</a><a href="/tags/Python/">Python</a><a href="/tags/Linearization/">Linearization</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
