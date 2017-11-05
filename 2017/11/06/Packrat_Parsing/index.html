@@ -69,9 +69,9 @@
 
   <div class="article-top-meta">
     <span class="posted-on">
-      <a href="/2017/11/05/Packrat_Parsing/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-11-05T08:36:43.100Z">
-          2017-11-05
+      <a href="/2017/11/06/Packrat_Parsing/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-11-05T16:09:57.219Z">
+          2017-11-06
         </time>
       </a>
     </span>
@@ -91,7 +91,7 @@
 <li>预测分析，通过peek等偷看后面的token，能达到线性的复杂度。</li>
 </ol>
 <p>Packrat让回溯解析也能做到线性时间复杂度了。</p>
-<h2 id="how"><a href="#how" class="headerlink" title="how"></a>how</h2><p>记忆化是动态规划算法的本质，因为CFG属于无状态的解析过程，所以完全可以使用记忆化的策略来进行保存中间的使用结果。</p>
+<h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><p>记忆化是动态规划算法的本质，因为CFG属于无状态的解析过程，所以完全可以使用记忆化的策略来进行保存中间的计算结果。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> dv = &#123;</div><div class="line"><span class="string">'Additive'</span>:  ExprAdditive(dv),</div><div class="line"><span class="string">'Multitive'</span>: ExprMultitive(dv),</div><div class="line"><span class="string">'Primary'</span>:   ExprPrimary(dv),</div><div class="line"><span class="string">'Number'</span>:    ExprNumber(dv),</div><div class="line"><span class="string">'Char'</span>:      next_dv,</div><div class="line"><span class="string">'str'</span>:       str,</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <p>定义一个类似链表的结构，每个结构结点为类似dv的结构，每个key为当前字符串位置进行解析的非终止符，不难想到，对于一个长度为m的字符串，假定有n个非终止符，最多有O(mn)个状态，所以能够达到O(n)的时间复杂度。</p>
 <p>Packrat对回溯解析本身并没有太大的改动，仅仅是增加了记忆化的查询、添加，就成功达到了O(n)。</p>
