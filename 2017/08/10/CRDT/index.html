@@ -85,7 +85,7 @@
       
         <ul>
 <li>BlahBlahBlah<ul>
-<li>很多人都应该听过<a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="external">CAP Theorem</a>，如果你没有，理解这篇文章可能有点费劲，推荐你看看。</li>
+<li>很多人都应该听过<a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="noopener">CAP Theorem</a>，如果你没有，理解这篇文章可能有点费劲，推荐你看看。</li>
 <li>如果你选择了AP，那么你最终可能会面临的问题就是你要不要达到最终一致性了。</li>
 <li>如果你选择了否，那么这篇文章可能不对应你的场景了。</li>
 <li>如果你选择了是，那么如何实现最终一致性呢？这就导出了CRDT。</li>
@@ -101,7 +101,7 @@
 </ul>
 </li>
 <li>CvRDT<ul>
-<li>结点和结点传输的是状态，存在一个算子merge: (SA, SB) =&gt; SC,收到传输的状态就和自己存储的状态merge，这个算子必须满足交换律、结合律和幂等律，所以如果用抽象代数的角度形容地话，其使整个状态系统形成了一个<a href="https://en.wikipedia.org/wiki/Semilattice" target="_blank" rel="external">半格</a>。所以最终只要能接受到其他所有节点的新状态，那么永远能保证系统最终会收敛。这样也去除了对于CmRDT的底层通讯机制依赖，但是因为传递的是状态，所以最后传输可能有点大。虽然还有优化的可能性。</li>
+<li>结点和结点传输的是状态，存在一个算子merge: (SA, SB) =&gt; SC,收到传输的状态就和自己存储的状态merge，这个算子必须满足交换律、结合律和幂等律，所以如果用抽象代数的角度形容地话，其使整个状态系统形成了一个<a href="https://en.wikipedia.org/wiki/Semilattice" target="_blank" rel="noopener">半格</a>。所以最终只要能接受到其他所有节点的新状态，那么永远能保证系统最终会收敛。这样也去除了对于CmRDT的底层通讯机制依赖，但是因为传递的是状态，所以最后传输可能有点大。虽然还有优化的可能性。</li>
 </ul>
 </li>
 </ul>

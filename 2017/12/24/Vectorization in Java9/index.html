@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vectorization in Java9 | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="SIMD,Java,Java9,Computer System,Vectorization">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Vectorization in Java9"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Vectorization in Java9</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/12/24/Vectorization in Java9/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-12-24T03:31:44.638Z">
+          2017-12-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近小忙，这次水一波。</p>
+<p>Finally, HotSpot终于能比较好的利用现代CPU的SIMD了。</p>
+<ul>
+<li>现况<ol>
+<li>Hotspot 支持一部分的x86 SIMD指令。</li>
+<li>C2能做Superword Optimaztion。</li>
+<li>数组的拷贝、填充、比较都默认SIMD化了。</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>JVM Intrinsics<ul>
+<li>@HotSpotIntrinsicCandidate说明函数实现被JVM用手写汇编或者IR优化了。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>已经被优化的：</p>
+<ul>
+<li>除了上面说的还有Arrays.equals();</li>
+<li>Array.mismatch()(Java9)。</li>
+</ul>
+</li>
+<li><p>SuperWord Optimzation</p>
+<ul>
+<li><p>只在C2</p>
+</li>
+<li><p>只能在unrolled的counted循环做优化。</p>
+<ul>
+<li><p>Counted 循环 是是只有单出口的循环。</p>
+</li>
+<li><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; limit; i+=stride) &#123;</div><div class="line">  <span class="comment">// loop body</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">int</span> i = start; <span class="keyword">while</span> (i &lt; limit) &#123;</div><div class="line">	<span class="comment">// loop body</span></div><div class="line">	i+=stride; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>可以使用-XX:+PrintCompilation -XX:+TraceLoopOpts查看,或者-XX:+PrintAssembly看生成的代码。</p>
+<ul>
+<li>Counted Loop: N100/N83 limit_check predicated counted [0,100),+1 (-1 iters)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Vector Box Elimination</p>
+<ul>
+<li>目前还比较brittle。</li>
+<li>这种优化只能解决一些问题，不是通用的优化。</li>
+<li>JNI很难开发和维护。</li>
+</ul>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>注意，手动unroll的代码是不能向量化的。</strong></li>
+</ul>
+<ul>
+<li>Hotspot团队的实验：<ul>
+<li>X86性能优化大概3-8%。</li>
+<li>1.5X的性能提升在vector centric micros。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/SIMD/">SIMD</a><a href="/tags/Java/">Java</a><a href="/tags/Java9/">Java9</a><a href="/tags/Computer-System/">Computer System</a><a href="/tags/Vectorization/">Vectorization</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

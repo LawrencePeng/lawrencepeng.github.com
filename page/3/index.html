@@ -61,6 +61,78 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/05/27/Natural-Mergesort/"><span>Natural Mergesort</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/27/Natural-Mergesort/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-27T04:36:41.000Z">
+          2017-05-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <ul>
+<li><p>目的</p>
+<ul>
+<li>普通MergeSort对于原本有序或者接近有序的数组的表现不好，所以引出了Natural Mergesort。</li>
+</ul>
+</li>
+<li><p>过程</p>
+<ul>
+<li>和MergeSort自顶向下的过程不同，Natural Mergesort选择了相反的方向。</li>
+</ul>
+</li>
+<li><p>代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function">ForwardIterator <span class="title">SortedRangeEnd</span><span class="params">(ForwardIterator begin, ForwardIterator end, Comparator comp)</span> </span>&#123;</div><div class="line">    <span class="comment">/* Edge case - if the input is empty, we're done. */</span></div><div class="line">    <span class="keyword">if</span> (begin == end) <span class="keyword">return</span> end;</div><div class="line"></div><div class="line">    <span class="comment">/* Get an iterator that's one step ahead of begin. */</span></div><div class="line">    ForwardIterator next = begin; ++next;</div><div class="line"></div><div class="line">    <span class="comment">/* Keep marching these iterators forward until we find a mismatch or</span></div><div class="line"><span class="comment">     * hit the end.  A mismatch occurs when the element after the current</span></div><div class="line"><span class="comment">     * is strictly less than the current element.</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">for</span> (; next != end &amp;&amp; !comp(*next, *begin); ++next, ++begin)</div><div class="line">      ;</div><div class="line"></div><div class="line">    <span class="comment">/* The above loop stops either when next is the end of the sequence or</span></div><div class="line"><span class="comment">     * when next is the crossover point.  In either case, return next.</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">return</span> next;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这个函数是来找到已经排好序的范围。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">Merge</span><span class="params">(ForwardIterator begin, ForwardIterator mid,</span></span></div><div class="line"><span class="function"><span class="params">             ForwardIterator end, Comparator comp)</span> </span>&#123;</div><div class="line">    <span class="comment">/* Determine the type of the element being iterated over. */</span></div><div class="line">    <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="built_in">std</span>::iterator_traits&lt;ForwardIterator&gt;::value_type T;</div><div class="line"></div><div class="line">    <span class="comment">/* Create a vector of Ts that will hold the merged sequence. */</span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;T&gt; merge;</div><div class="line"></div><div class="line">    <span class="comment">/* Continuously choose the smaller of the two to go in front until some</span></div><div class="line"><span class="comment">     * range is consumed.</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    ForwardIterator one = begin, two = mid;</div><div class="line">    <span class="keyword">while</span> (one != mid &amp;&amp; two != end) &#123;</div><div class="line">      <span class="keyword">if</span> (comp(*one, *two)) &#123; <span class="comment">// First sequence has smaller element</span></div><div class="line">        merge.push_back(*one);</div><div class="line">        ++one;</div><div class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// Second sequence has smaller element.</span></div><div class="line">        merge.push_back(*two);</div><div class="line">        ++two;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Once one of the sequences has been exhausted, one of two cases holds:</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * 1. The first sequence was consumed.  In that case, the rest of the</span></div><div class="line"><span class="comment">     *    second sequence is valid and we can just copy the merged sequence</span></div><div class="line"><span class="comment">     *    in front of it.</span></div><div class="line"><span class="comment">     * 2. The second sequence was consumed.  In that case, we copy the rest</span></div><div class="line"><span class="comment">     *    of the first sequence into the merged sequence, then write the</span></div><div class="line"><span class="comment">     *    merged sequence back.</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">if</span> (two == end)</div><div class="line">      merge.insert(merge.end(), one, mid);</div><div class="line"></div><div class="line">    <span class="built_in">std</span>::copy(merge.begin(), merge.end(), begin);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>稀疏平常的merge部分。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">NaturalMergesort(ForwardIterator begin, ForwardIterator end,</div><div class="line">                      Comparator comp) &#123;</div><div class="line"><span class="keyword">if</span> (begin == end) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">  <span class="comment">/* Track whether the current iteration of the algorithm has made any</span></div><div class="line"><span class="comment">   * changes.  If it didn't, then we can finish early.</span></div><div class="line"><span class="comment">   */</span></div><div class="line">  <span class="keyword">bool</span> haveMerged;</div><div class="line"></div><div class="line">  <span class="comment">/* Continuously loop, merging together ranges until the input is fully</span></div><div class="line"><span class="comment">   * sorted.</span></div><div class="line"><span class="comment">   */</span></div><div class="line">  <span class="keyword">do</span> &#123;</div><div class="line">    <span class="comment">/* We have not yet merged anything, so clear this flag. */</span></div><div class="line">    haveMerged = <span class="literal">false</span>;</div><div class="line"></div><div class="line">    <span class="comment">/* Scan forward in the loop, looking for adjacent pairs of sorted ranges</span></div><div class="line"><span class="comment">     * and merging them.  </span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">for</span> (ForwardIterator itr = begin; itr != end; ) &#123;</div><div class="line">      <span class="comment">/* See how far this range extends. */</span></div><div class="line">      ForwardIterator rangeEnd = SortedRangeEnd(itr, end, comp);</div><div class="line"></div><div class="line">      <span class="comment">/* If we hit the end of the range, we're done with this iteration. */</span></div><div class="line">      <span class="keyword">if</span> (rangeEnd == end) <span class="keyword">break</span>;</div><div class="line"></div><div class="line">      <span class="comment">/* See where the end of that range is. */</span></div><div class="line">      ForwardIterator nextRangeEnd = SortedRangeEnd(rangeEnd, end, comp);</div><div class="line"></div><div class="line">      <span class="comment">/* Merge this range with the range after it. */</span></div><div class="line">      Merge(itr, rangeEnd, nextRangeEnd, comp);</div><div class="line">      </div><div class="line">      <span class="comment">/* Flag that we did at least one merge so we don't stop early. */</span></div><div class="line">      haveMerged = <span class="literal">true</span>;</div><div class="line"></div><div class="line">      <span class="comment">/* Advance the iterator to the start of the next sequence, which is</span></div><div class="line"><span class="comment">       * directly after the end of the second sorted range.</span></div><div class="line"><span class="comment">       */</span></div><div class="line">      itr = nextRangeEnd;</div><div class="line">    &#125;</div><div class="line">  &#125; <span class="keyword">while</span> (haveMerged);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到只是一个很小的更改，就能让我们成功降低mergesort最好时间复杂度，真正让mergesort更加实用了。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Algo/">Algo</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/05/26/Pearson-s-hash/"><span>Pearson&#39;s hash</span></a></h3>
     
   
@@ -153,7 +225,7 @@
   <div class="article-content">
     <div class="entry">
       
-        <p>你是否有留意过很多的电子博弈游戏平台玩家创建账号后评分大多数是1500分（我印象中欢乐斗地主就是这样的。）。最近柯杰和AlphaGo的围棋3番战举世瞩目，柯杰作为人类目前围棋界世界第一的棋手，你是否知道他目前2800多的积分是如何得到呢？《社交网络》中男猪脚马克扎克伯格被女友甩了，气愤的他创建了Facemash，让用户选择他们觉得更漂亮的女生，那么如何在诸多选择中构建一个合理的排名呢？本文将介绍Elo Rating System，它是目前世界大量双人博弈运动的评分系统,比如可以看看这个新闻（<a href="https://bbs.hupu.com/13830203.html）。让我们开车吧。" target="_blank" rel="external">https://bbs.hupu.com/13830203.html）。让我们开车吧。</a></p>
+        <p>你是否有留意过很多的电子博弈游戏平台玩家创建账号后评分大多数是1500分（我印象中欢乐斗地主就是这样的。）。最近柯杰和AlphaGo的围棋3番战举世瞩目，柯杰作为人类目前围棋界世界第一的棋手，你是否知道他目前2800多的积分是如何得到呢？《社交网络》中男猪脚马克扎克伯格被女友甩了，气愤的他创建了Facemash，让用户选择他们觉得更漂亮的女生，那么如何在诸多选择中构建一个合理的排名呢？本文将介绍Elo Rating System，它是目前世界大量双人博弈运动的评分系统,比如可以看看这个新闻（<a href="https://bbs.hupu.com/13830203.html）。让我们开车吧。" target="_blank" rel="noopener">https://bbs.hupu.com/13830203.html）。让我们开车吧。</a></p>
 <ul>
 <li><p>历史</p>
 <ul>
@@ -300,7 +372,7 @@
 </li>
 </ul>
 <ul>
-<li><a href="http://www.wikiwand.com/en/Discounted_cumulative_gain" target="_blank" rel="external">DGC</a></li>
+<li><a href="http://www.wikiwand.com/en/Discounted_cumulative_gain" target="_blank" rel="noopener">DGC</a></li>
 </ul>
 <p>  ​<br>  ​<br>  ​    </p>
 

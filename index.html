@@ -61,6 +61,119 @@
 
   
     
+    <h3 class="article-title"><a href="/2017/12/24/Vectorization in Java9/"><span>Vectorization in Java9</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/12/24/Vectorization in Java9/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-12-24T03:31:44.638Z">
+          2017-12-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近小忙，这次水一波。</p>
+<p>Finally, HotSpot终于能比较好的利用现代CPU的SIMD了。</p>
+<ul>
+<li>现况<ol>
+<li>Hotspot 支持一部分的x86 SIMD指令。</li>
+<li>C2能做Superword Optimaztion。</li>
+<li>数组的拷贝、填充、比较都默认SIMD化了。</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>JVM Intrinsics<ul>
+<li>@HotSpotIntrinsicCandidate说明函数实现被JVM用手写汇编或者IR优化了。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>已经被优化的：</p>
+<ul>
+<li>除了上面说的还有Arrays.equals();</li>
+<li>Array.mismatch()(Java9)。</li>
+</ul>
+</li>
+<li><p>SuperWord Optimzation</p>
+<ul>
+<li><p>只在C2</p>
+</li>
+<li><p>只能在unrolled的counted循环做优化。</p>
+<ul>
+<li><p>Counted 循环 是是只有单出口的循环。</p>
+</li>
+<li><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; limit; i+=stride) &#123;</div><div class="line">  <span class="comment">// loop body</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">int</span> i = start; <span class="keyword">while</span> (i &lt; limit) &#123;</div><div class="line">	<span class="comment">// loop body</span></div><div class="line">	i+=stride; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>可以使用-XX:+PrintCompilation -XX:+TraceLoopOpts查看,或者-XX:+PrintAssembly看生成的代码。</p>
+<ul>
+<li>Counted Loop: N100/N83 limit_check predicated counted [0,100),+1 (-1 iters)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Vector Box Elimination</p>
+<ul>
+<li>目前还比较brittle。</li>
+<li>这种优化只能解决一些问题，不是通用的优化。</li>
+<li>JNI很难开发和维护。</li>
+</ul>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>注意，手动unroll的代码是不能向量化的。</strong></li>
+</ul>
+<ul>
+<li>Hotspot团队的实验：<ul>
+<li>X86性能优化大概3-8%。</li>
+<li>1.5X的性能提升在vector centric micros。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/SIMD/">SIMD</a><a href="/tags/Java/">Java</a><a href="/tags/Java9/">Java9</a><a href="/tags/Computer-System/">Computer System</a><a href="/tags/Vectorization/">Vectorization</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2017/11/06/Packrat_Parsing/"><span>DP your Parser</span></a></h3>
     
   
@@ -95,7 +208,7 @@
 <p>Packrat对回溯解析本身并没有太大的改动，仅仅是增加了记忆化的查询、添加，就成功达到了O(n)。</p>
 <p>2*(3 + 4)的解析结果 <img src="https://pic2.zhimg.com/50/v2-add961a136e6cea2af02f2591da2d969_hd.jpg" alt="">。</p>
 <p>js解析数值表达式的demo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div></pre></td><td class="code"><pre><div class="line">function dvAdditive(dv)&#123;</div><div class="line">if(!(&apos;Additive&apos; in dv))&#123;</div><div class="line">dv.Additive=ExprAdditive(dv);</div><div class="line">&#125;</div><div class="line">return dv.Additive;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function ExprAdditive(dv)&#123;</div><div class="line">try&#123;</div><div class="line">var mul=dvMultitive(dv);</div><div class="line">if(dvChar(mul.dv).value==&apos;+&apos;)&#123;</div><div class="line">var add=dvAdditive(dvChar(mul.dv).dv);</div><div class="line">return &#123;</div><div class="line">&apos;value&apos;: mul.value+add.value,</div><div class="line">&apos;dv&apos;: add.dv,</div><div class="line">&#125;;</div><div class="line">&#125; else &#123;</div><div class="line">throw &#123;&#125;;</div><div class="line">&#125;</div><div class="line">&#125; catch(e) &#123;</div><div class="line">return dvMultitive(dv);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function dvMultitive(dv)&#123;</div><div class="line">if(!(&apos;Multitive&apos; in dv))&#123;</div><div class="line">dv.Multitive=ExprMultitive(dv);</div><div class="line">&#125;</div><div class="line">return dv.Multitive;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function ExprMultitive(dv)&#123;</div><div class="line">try&#123;</div><div class="line">var primary=dvPrimary(dv);</div><div class="line">if(dvChar(primary.dv).value==&apos;*&apos;)&#123;</div><div class="line">var mul=dvMultitive(dvChar(primary.dv).dv);</div><div class="line">return &#123;</div><div class="line">&apos;value&apos;: primary.value*mul.value,</div><div class="line">&apos;dv&apos;: mul.dv,</div><div class="line">&#125;;</div><div class="line">&#125; else &#123;</div><div class="line">throw &#123;&#125;;</div><div class="line">&#125;</div><div class="line">&#125; catch(e) &#123;</div><div class="line">return dvPrimary(dv);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function dvPrimary(dv)&#123;</div><div class="line">if(!(&apos;Primary&apos; in dv))&#123;</div><div class="line">dv.Primary=ExprPrimary(dv);</div><div class="line">&#125;</div><div class="line">return dv.Primary;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function ExprPrimary(dv)&#123;</div><div class="line">try&#123;</div><div class="line">if(dvChar(dv).value==&apos;(&apos;)&#123;</div><div class="line">var add=dvAdditive(dvChar(dv).dv);</div><div class="line">if(dvChar(add.dv).value==&apos;)&apos;)</div><div class="line">&#123;</div><div class="line">return &#123;</div><div class="line">&apos;value&apos;: add.value,</div><div class="line">&apos;dv&apos;: dvChar(add.dv).dv,</div><div class="line">&#125;;</div><div class="line">&#125; else &#123;</div><div class="line">throw &#123;&#125;;</div><div class="line">&#125;</div><div class="line">&#125; else &#123;</div><div class="line">throw &#123;&#125;;</div><div class="line">&#125;</div><div class="line">&#125; catch(e) &#123;</div><div class="line">return dvNumber(dv);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function dvNumber(dv)&#123;</div><div class="line">if(!(&apos;Number&apos; in dv))&#123;</div><div class="line">dv.Number=ExprNumber(dv);</div><div class="line">&#125;</div><div class="line">return dv.Number;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function ExprNumber(dv)&#123;</div><div class="line">var value=0;</div><div class="line">while(!isNaN(dvChar(dv).value))&#123;</div><div class="line">value=value*10+parseInt(dvChar(dv).value);</div><div class="line">dv=dvChar(dv).dv;</div><div class="line">&#125;</div><div class="line">return &#123;</div><div class="line">&apos;value&apos;: value,</div><div class="line">&apos;dv&apos;: dv,</div><div class="line">&#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function dvChar(dv)&#123;</div><div class="line">if(!(&apos;Char&apos; in dv))&#123;</div><div class="line">dv.Char=&#123;</div><div class="line">&apos;value&apos;: dv.str[0],</div><div class="line">&apos;dv&apos;: &#123;</div><div class="line">&apos;str&apos;: dv.str.slice(1),</div><div class="line">&#125;,</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">return dv.Char;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">function Expr(str)&#123;</div><div class="line">return ExprAdditive(&#123;</div><div class="line">&apos;str&apos;: str,</div><div class="line">&#125;).value;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Ref: <a href="https://zhuanlan.zhihu.com/p/25260077" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/25260077</a></p>
+<p>Ref: <a href="https://zhuanlan.zhihu.com/p/25260077" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25260077</a></p>
 
       
     </div>
@@ -237,7 +350,7 @@
   <div class="article-content">
     <div class="entry">
       
-        <p><a href="https://www.evernote.com/l/Ako9JcTFGjRKuawWE0fGG_AR7tata12cZ8M" target="_blank" rel="external">https://www.evernote.com/l/Ako9JcTFGjRKuawWE0fGG_AR7tata12cZ8M</a></p>
+        <p><a href="https://www.evernote.com/l/Ako9JcTFGjRKuawWE0fGG_AR7tata12cZ8M" target="_blank" rel="noopener">https://www.evernote.com/l/Ako9JcTFGjRKuawWE0fGG_AR7tata12cZ8M</a></p>
 
       
     </div>
@@ -305,7 +418,7 @@
 </ul>
 </li>
 <li>What<ul>
-<li>最近Chrome宣布18年要<a href="https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ" target="_blank" rel="external">完全移除HPKP</a>。除了HPKP本身的问题外，大家可以想想这种机制的问题何在？</li>
+<li>最近Chrome宣布18年要<a href="https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ" target="_blank" rel="noopener">完全移除HPKP</a>。除了HPKP本身的问题外，大家可以想想这种机制的问题何在？</li>
 </ul>
 </li>
 </ul>
@@ -663,7 +776,7 @@
       
         <ul>
 <li>BlahBlahBlah<ul>
-<li>很多人都应该听过<a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="external">CAP Theorem</a>，如果你没有，理解这篇文章可能有点费劲，推荐你看看。</li>
+<li>很多人都应该听过<a href="https://en.wikipedia.org/wiki/CAP_theorem" target="_blank" rel="noopener">CAP Theorem</a>，如果你没有，理解这篇文章可能有点费劲，推荐你看看。</li>
 <li>如果你选择了AP，那么你最终可能会面临的问题就是你要不要达到最终一致性了。</li>
 <li>如果你选择了否，那么这篇文章可能不对应你的场景了。</li>
 <li>如果你选择了是，那么如何实现最终一致性呢？这就导出了CRDT。</li>
@@ -679,7 +792,7 @@
 </ul>
 </li>
 <li>CvRDT<ul>
-<li>结点和结点传输的是状态，存在一个算子merge: (SA, SB) =&gt; SC,收到传输的状态就和自己存储的状态merge，这个算子必须满足交换律、结合律和幂等律，所以如果用抽象代数的角度形容地话，其使整个状态系统形成了一个<a href="https://en.wikipedia.org/wiki/Semilattice" target="_blank" rel="external">半格</a>。所以最终只要能接受到其他所有节点的新状态，那么永远能保证系统最终会收敛。这样也去除了对于CmRDT的底层通讯机制依赖，但是因为传递的是状态，所以最后传输可能有点大。虽然还有优化的可能性。</li>
+<li>结点和结点传输的是状态，存在一个算子merge: (SA, SB) =&gt; SC,收到传输的状态就和自己存储的状态merge，这个算子必须满足交换律、结合律和幂等律，所以如果用抽象代数的角度形容地话，其使整个状态系统形成了一个<a href="https://en.wikipedia.org/wiki/Semilattice" target="_blank" rel="noopener">半格</a>。所以最终只要能接受到其他所有节点的新状态，那么永远能保证系统最终会收敛。这样也去除了对于CmRDT的底层通讯机制依赖，但是因为传递的是状态，所以最后传输可能有点大。虽然还有优化的可能性。</li>
 </ul>
 </li>
 </ul>
@@ -753,7 +866,7 @@
 </ul>
 </li>
 <li>所以你应该勇敢暴破（坚持）哦。</li>
-<li>对了，最近CACM有个讲暴破的<a href="https://cacm.acm.org/magazines/2017/8/219606-the-science-of-brute-force/fulltext" target="_blank" rel="external">文章</a>挺好玩的。</li>
+<li>对了，最近CACM有个讲暴破的<a href="https://cacm.acm.org/magazines/2017/8/219606-the-science-of-brute-force/fulltext" target="_blank" rel="noopener">文章</a>挺好玩的。</li>
 </ul>
 </li>
 </ul>
@@ -836,109 +949,6 @@
     <span class="post-tags">
       <i class="icon-tags"></i>
         <a href="/tags/Probability-Theory/">Probability Theory</a><a href="/tags/Visualization/">Visualization</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/07/30/SuccinctStore深度解析-—-CSA实现/"><span>SuccinctStore深度解析 — CSA实现</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/07/30/SuccinctStore深度解析-—-CSA实现/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-07-30T03:40:39.000Z">
-          2017-07-30
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <ul>
-<li>前提<ul>
-<li>SuccinctStore依靠Compressed Suffix Array这一数据结构进行构建，实际上这也是因为CSA在空间使用上会优于CST。不过，如果没有从理论上明白它的一些时空复杂度，我相信是没人刚用的。要是突然我能构造出一个异常的输入样本，导致糟糕的怎么办？所以我们先来看下它的时间空间复杂度吧。</li>
-<li>时间复杂度：O(n)，实际上有很多好的CSA的构建算法都能达到这个上界，做竞赛的同学们可能会比较熟悉DC3算法。</li>
-<li>空间复杂度：O(n)，这个也没什么悬念的？真的吗？对于CSA来说，我们需要更加紧的上界，这里就要提出k-th order empirical entropy了。<ul>
-<li>zero-th order empirical entropy<ul>
-<li>要理解k-th order empirical entropy，首先要理解zero-th order empirical entropy。</li>
-<li>zero-th order empirical entropy是单独压缩每个单词最后能压缩的大小，可以看出，它并没有利用到上下文信息。</li>
-</ul>
-</li>
-<li>k-th order empirical entropy，高级的压缩器能利用这一上下文并根据这一上下文选出不同的codeword，k是这个上下文的大小，k越大，当然压缩率会越高，但是这个上下文表示所需要的空间也会相应变大，一般我们需要有个empirical的选值。公式大家可以g娘一下。</li>
-<li>CSA的空间复杂度为O(nHk(T)) + o(n)</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>实现<ul>
-<li>目标<ul>
-<li>f = compress(file)</li>
-<li>append(f, buffer)</li>
-<li>buffer = extract(f, offset, len)</li>
-<li>cnt = count(f, str)</li>
-<li>offsets = search(f, str)</li>
-<li>offsets = rangesearch(f, str1, str2)</li>
-<li>ranges = wildcardsearch(f, prefix, suffix, dist)</li>
-<li>offsets = regex(f, pattern)</li>
-</ul>
-</li>
-<li>Flat Text To Semi-structured Data<ul>
-<li>一些简单的拓展就能让我们实现更加复杂的数据模型。</li>
-<li><img src="http://imglf1.nosdn.127.net/img/R0xHYjBEcUE1MmlpVmQ4TkQ2bm02KzdlcXFpWnFRV1JZaTViakw5ZWZVaTVkT29sbGpoc0tnPT0.png?imageView&amp;thumbnail=1680x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt=""></li>
-</ul>
-</li>
-<li>Suffix Array 运用<ul>
-<li>我们维护两个数组AoS2Input和Input2AoS，不难看出这两个互为反函数。</li>
-<li>当我们要search某Pattern p的时候，binary search p所在的两个端点，返回成区间形式即可。</li>
-<li>当我们要extract的时候，利用Input2AoS，直接是一个O(1)的操作。</li>
-</ul>
-</li>
-<li>压压压<ul>
-<li>原先的实现会需要维护O(nlog + n^2)的空间。所以考虑引入新的数组NextCharIdx，NextCharIdx(idx) -&gt; NextIndexInAoS。</li>
-<li>这样我们只需要mark每个单词出现的首个index即刻，后面需要定位的时候follow NextCharIdx，通过binary search到对应的字符Offset即可。</li>
-<li>对于AoS2Input和Input2AoS两个输出，我们采用取样的方法减小其大小。默认选择这两个数组的大小为原数组的1/32。</li>
-<li>因为NextCharIdx本身是单调递增的，所以我们可以选择一些编码方式做DeltaCompression， 这里我使用的是Elias Gamma Code。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Database/">Database</a><a href="/tags/Succinct-Data-Structure/">Succinct Data Structure</a>
     </span>
     
 
