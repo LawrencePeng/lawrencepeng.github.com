@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>TreeDoc 好用的CRDT For String | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="CRDT,Distributed System,Co-Edit">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="TreeDoc 好用的CRDT For String"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>TreeDoc 好用的CRDT For String</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/07/12/TreeDoc/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-07-12T03:22:38.649Z">
+          2018-07-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>TreeDoc是CRDT。不熟悉CRDT的可以看我之前的文章。</p>
+<p>TreeDoc解决了CRDT中常见的atomid的开销问题，其创新式的用BinaryTree表示一个任意一个有序的atomic。方法就不多赘述了，传统的BT编码模式+一些Tricks。</p>
+<p>TreeDoc最有贡献的就是实现了explode/flatten的操作，对于没有并发冲突的部分，flatten为没有atomid 的数组，减少了Overhead。当有并发冲突的时候再explode为BinaryTree。</p>
+<p>当然最后的Related work对于OT的描述还是很解读。</p>
+<p>Operational transformation (OT)  considers collaborative<br>editing based on non-commutative operations. To<br>this end, OT transforms the arguments of remote operations<br>to take into account the effects of concurrent executions. OT<br>requires two correctness conditions : the transformation<br>should enable concurrent operations to execute in either<br>order, and furthermore, transformation functions themselves<br>must commute. The former is relatively easy. The latter is<br>more complex, and Oster et al.  prove that all previously<br>proposed transformations violate it. Later solutions [14–16]<br>are complex, and their correctness is hard to verify.<br>OT attempts to make non-commuting operations commute<br>after the fact. We believe that a better approach is to design<br>operations to commute in the first place. This is more<br>elegant, and avoids the complexities of OT.</p>
+<p>blog要发展为morning paper的感觉了。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/CRDT/">CRDT</a><a href="/tags/Distributed-System/">Distributed System</a><a href="/tags/Co-Edit/">Co-Edit</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
