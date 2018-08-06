@@ -61,6 +61,71 @@
 
   
     
+    <h3 class="article-title"><a href="/2018/08/06/Parquet和Presto的故事/"><span>Parquet和Presto的故事</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/06/Parquet和Presto的故事/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-06T09:56:04.284Z">
+          2018-08-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="Parquet"><a href="#Parquet" class="headerlink" title="Parquet"></a>Parquet</h1><p>Parquet是成熟的列式存储文件格式，数据以row groups分为partitions，每个partition的数据以列分别存储，Footer存储了每个块的元数据信息。以各种压缩算法来压缩数据。</p>
+<h1 id="Presto"><a href="#Presto" class="headerlink" title="Presto"></a>Presto</h1><p>Presto是开源的分布式SQL查询引擎。本身不store数据，通过reader读到执行引擎中。可以实现不同类型数据库的join。</p>
+<h1 id="故事"><a href="#故事" class="headerlink" title="故事"></a>故事</h1><p>之前的Parquet Reader For Presto（后面简称PRFP）没有完全地利用Parquet的优势，所以Uber Team改进了其设计。</p>
+<p>假设执行SQL为</p>
+<p>SELECT base.driver_uuid FROM rawdata.schemaless_mezzanine_trips_rows WHERE datestr = ‘2017-03-02’ AND base.city_id in (12)</p>
+<p>原来的PRFP会分三步走： 1. 以行为单位用Parquet的开源库读所有数据。2. 将行格式转化为Presto的列式内存块。3. 根据断言base.city_id = 12 来过滤这些block，然后就丢给Presto执行引擎执行。</p>
+<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><ol>
+<li>裁列 – 只读所需列，而不是所有列</li>
+<li>没有行列转换，直接将Parquet列格式转化为Presto列格式。</li>
+<li>利用Footer中的元数据，在特定列不在Row Group中列区间时，跳过这个Group</li>
+<li>利用Footer中的Row Group级别的列值字典，不在字典中的city_id的group跳过。</li>
+<li>只有有断言filter后有数据的group才生成Parquet数据块。</li>
+</ol>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Parquet/">Parquet</a><a href="/tags/Presto/">Presto</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2018/07/12/TreeDoc/"><span>TreeDoc 好用的CRDT For String</span></a></h3>
     
   
@@ -858,109 +923,6 @@
 
     
 
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/09/23/Odd-Sketch/"><span>Odd Sketch</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/09/23/Odd-Sketch/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-09-23T06:59:49.000Z">
-          2017-09-23
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>之前介绍了过一个Sketch了，现在再介绍一个吧。今天介绍的这个是Odd Sketch。它是用来快速估计集合相似度Jaccard similarity的。</p>
-<ul>
-<li>实现<ul>
-<li>新建一个n bits的sketch S，置0。</li>
-<li>选一个随机哈希函数</li>
-<li>对集合每个元素<ul>
-<li>Sh(x) = Sh(x) xor 1</li>
-</ul>
-</li>
-<li>返回S</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>性质<ul>
-<li>Odd(S1) xor Odd(S2) = Odd(S1 diff S2)</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>估计<ul>
-<li>估计集合大小<ul>
-<li>让m和n分别代表集合S和Odd(S)的比特大小。因为哈希函数全随机，我们可以认为构造Odd(S)的过程是m球丢n桶实验。Odd(S)i最后为第i个桶的球数的奇偶性。这样想的话我们有两种方式来构造集合大小。<ol>
-<li>每一次丢球，对于任意一个桶来说都有1/n的几率转换球数奇偶性的状态，所以就当成简单的2-state Markov chain就好了。设pi为丢完i个球后任意一个给定的桶有奇数个球的概率。我们很容易知道：pi = （1 - (1 - 2/n)^i) / 2，这是标准的马式链的题目了。</li>
-<li>不难推出m个球丢出去后所有奇数桶的数量的期望E[X] = n (1 - ((1 - 2 / n) ^ m) / 2)</li>
-<li>现在假设有了z为奇数桶数，不难倒估m为ln(1 - 2z/ n) / ln(1 - 2/n)</li>
-</ol>
-</li>
-<li>当m球丢进了n桶，对于一个桶来说，可以认为其为一个均值u = m / n的泊松过程，<ul>
-<li>令p为有一个桶奇数个球的概率，则p =  sum all i odd (e^(-u) * (u^i)) / i! = (1 - e^(-2u))/2。</li>
-<li>令Y为整个过程结束后m个桶中奇数球数桶的期望,则有: E[Y] = np = n(1 - (e^(-2m / n)) / 2)</li>
-<li>所以通过奇数桶数z可倒估m为-(n/2) * ln(1 - 2z/n)。</li>
-<li>当n很大时，ln(1 - 2/n)约等于-2/n，这样和第一个等式就差不多了。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>估计Jaccard Similarity<ul>
-<li>E[|S1 diff S2|] = 2k(1 - J),其中k是独立置换的数量。J是我们要估计的Jaccard Similarity。</li>
-<li>我们上面的Odd Sketch的过程可以帮助我们找到|S1 diff S2|的一个估计为- (n / 2) * ln(1 - 2 |Odd(S1) diff Pdd(S2)|/n)，其中|Odd(S1) diff Odd(S2)|就是我们构造的的2个Odd Sketch不同的位数。现在根据E[|S1 diff S2|] = 2k(1 - J)，我们可以逆估<ul>
-<li>J = 1 - |S1 Diff S2|/2k = 1 + (n/4k) * ln(1 - 2|Odd(S1) diff Odd(S2)| / n)    </li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>后面的其他的估计我们就不讲了，说下结论，它在高Jaccard Similarity的情况下，比minhash的表现更好哦。</li>
-</ul>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Algo/">Algo</a>
-    </span>
     
 
     </div>
