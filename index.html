@@ -61,6 +61,76 @@
 
   
     
+    <h3 class="article-title"><a href="/2018/08/08/单实例比redis吞吐大12倍，Anna用了什么黑科技/"><span>单实例比redis吞吐大12倍，Anna用了什么黑科技？</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/08/单实例比redis吞吐大12倍，Anna用了什么黑科技/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-08T08:35:45.285Z">
+          2018-08-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="为什么Redis快？"><a href="#为什么Redis快？" class="headerlink" title="为什么Redis快？"></a>为什么Redis快？</h1><p>要说明为什么redis快的话，至少要一篇中篇文章的长度了。我们长话短说：</p>
+<ol>
+<li>内核操作，IO关键路径少。</li>
+<li>非阻塞网络模型</li>
+<li>良好的CodeBase</li>
+</ol>
+<h1 id="为什么Redis不够快？"><a href="#为什么Redis不够快？" class="headerlink" title="为什么Redis不够快？"></a>为什么Redis不够快？</h1><p>就一个线程，还想怎样？</p>
+<p>为什么Redis不是多线程架构呢？</p>
+<p>因为共享内存架构，多线程就得要锁、抢占吧。</p>
+<h1 id="Anna的利器-Actor模型"><a href="#Anna的利器-Actor模型" class="headerlink" title="Anna的利器-Actor模型"></a>Anna的利器-Actor模型</h1><p>Actor模型意味着每个Actor之间不共享内存，发消息来同步。</p>
+<p>没有共享内存了，自然就没有锁了。</p>
+<p>我们自然就进入了Wait-Free世界。</p>
+<p>每个核心pin一个CPU，自然没有抢占了。</p>
+<p>然后Actor模型要做真同步的代价太大，所以我们的Anna不是强一致性的，实际上，很多时候，我们也不需要强一致性。</p>
+<h1 id="Anna的尖刀-CRDT"><a href="#Anna的尖刀-CRDT" class="headerlink" title="Anna的尖刀-CRDT"></a>Anna的尖刀-CRDT</h1><p>和直接一个hashmap相比，Anna选择的是实现一个CRDT-Map。为什么要这样呢?</p>
+<p>Anna采用Multi-Master架构，每个Master都可能受到一些写操作，在一个epoch结束时，个个Master需要互相交换更新。如果不使用CRDT，一个简单的做法就是将所有的写操作记录在Log中，发Log给所有其他Master。这样的问题就在于如果操作过多，消息传递、Apply的时间就不会少，而且顺序也变的重要了起来，很难最后收敛到一致。所以使用CRDT，收敛就不是问题了。每个Epoch结束Master只需要把自己的状态发给其他Master即可，CRDT能保证无论状态收到的顺序如何，最后都能收敛。问题解决。</p>
+<h1 id="Anna的语法糖-预定义的冲突解决器"><a href="#Anna的语法糖-预定义的冲突解决器" class="headerlink" title="Anna的语法糖-预定义的冲突解决器"></a>Anna的语法糖-预定义的冲突解决器</h1><p>用了CRDT很麻烦的时候就是并发操作的时候需要自己写冲突解决器。Riak就是这样的设计，用Cassandra的LWW肯定问题多多，那么Anna怎么做的呢？要实现xxx-consistency怎么做呢？Anna的作者帮你解决了常见的consistentcy的代码编写，实际上得益于CRDT优秀的模块化能力，更改的代码很少超过50行。用的开心。</p>
+<h1 id="到18年了，什么变了？"><a href="#到18年了，什么变了？" class="headerlink" title="到18年了，什么变了？"></a>到18年了，什么变了？</h1><p>很开心看到Actor模式的部分推广。Erlang、Akka的思想是从本质上思考软件本身。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/redis/">redis</a><a href="/tags/anna/">anna</a><a href="/tags/actor/">actor</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2018/08/06/Parquet和Presto的故事/"><span>Parquet和Presto的故事</span></a></h3>
     
   
@@ -223,116 +293,6 @@
       <i class="icon-tags"></i>
         <a href="/tags/Distributed-System/">Distributed System</a>
     </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/12/29/FastDFS多机部署/"><span></span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/12/29/FastDFS多机部署/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-12-29T07:45:04.722Z">
-          2017-12-29
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h1 id="FastDFS多机部署"><a href="#FastDFS多机部署" class="headerlink" title="FastDFS多机部署"></a>FastDFS多机部署</h1><ol>
-<li><p>配置tracker服务</p>
-<ol>
-<li><p>复制一份配置文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp /etc/fdfs/tracker.conf /etc/fdfs/tracker.conf.old</div><div class="line">cp /etc/fdfs/tracker.conf.sample /etc/fdfs/tracker.conf</div></pre></td></tr></table></figure>
-<p>​</p>
-</li>
-<li><p>编辑</p>
-<p><code>vim /etc/fdfs/tracker.conf</code></p>
-<p>修改base_path(数据和日志存放处)</p>
-</li>
-<li><p>启动tracker服务</p>
-<p><code>/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf</code></p>
-</li>
-<li><p>查看是否有 tracker 进程</p>
-<p><code>ps aux | grep tracker</code></p>
-</li>
-</ol>
-</li>
-<li><p>storage结点部署</p>
-<ol>
-<li><p>复制一份配置文件：</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cp /etc/fdfs/storage.conf /etc/fdfs/storage.conf.old</div><div class="line">cp /etc/fdfs/storage.conf.sample /etc/fdfs/storage.conf</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>​</p>
-<ol>
-<li><p>编辑：<code>vim /etc/fdfs/storage.conf</code></p>
-</li>
-<li><p>修改base_path、group_name、port、store_path（如果有多个盘，应该配置多个目录）、tracker_server（对应4的tracker服务）</p>
-</li>
-<li><p>启动</p>
-<p><code>/usr/bin/fdfs_storaged /etc/fdfs/storage.conf restart</code></p>
-</li>
-<li><p>查看是否有storage进程</p>
-<p><code>ps aux | grep storage</code></p>
-<p>Storage结点都可以以此方式部署在多个主机上。</p>
-</li>
-<li><p>修改/etc/fdfs/mod_fastdfs.conf</p>
-<ol>
-<li><p>修改group_count</p>
-</li>
-<li><p>在底部添加group信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">storage_server_port=23000</div><div class="line">group_name=group1 </div><div class="line">url_have_group_name=true</div><div class="line">group_count=2</div><div class="line">[group1]</div><div class="line">group_name=group1</div><div class="line">storage_server_port=23000</div><div class="line">store_path_count=1</div><div class="line">store_path0=/data/fastdfs/storage</div><div class="line">[group2]</div><div class="line">group_name=group2</div><div class="line">storage_server_port=23000</div><div class="line">store_path_count=1</div><div class="line">store_path0=/data/fastdfs/storage1</div></pre></td></tr></table></figure>
-<p>​</p>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-<li><p>nginx配置</p>
-<ol>
-<li><p>tracker的nginx配置</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="section">http</span> &#123;</div><div class="line"> <span class="attribute">upstream</span> fdfs_group3 &#123; <span class="comment">#设置group3的服务器  </span></div><div class="line">   <span class="attribute">server</span> ip:port;</div><div class="line"> &#125;</div><div class="line">  </div><div class="line"> <span class="section">server</span> &#123;  </div><div class="line">   <span class="attribute">listen</span> <span class="number">80</span>;                <span class="comment">#设置服务器端口  </span></div><div class="line">   <span class="attribute">server_name</span> ip_of_tracker;  </div><div class="line">  </div><div class="line">   <span class="attribute">location</span> /group1/M00 &#123;</div><div class="line">     <span class="attribute">root</span> /data/fastdfs/storage/data;</div><div class="line">     ngx_fastdfs_module;</div><div class="line">     <span class="attribute">add_header</span> <span class="string">'Access-Control-Allow-Origin'</span> <span class="string">"*"</span>;</div><div class="line">   &#125;  </div><div class="line">  </div><div class="line">   <span class="attribute">location</span> /group2/M00 &#123;</div><div class="line">     <span class="attribute">root</span> /data/fastdfs/storage1/data;</div><div class="line">     ngx_fastdfs_module;</div><div class="line">     <span class="attribute">add_header</span> <span class="string">'Access-Control-Allow-Origin'</span> <span class="string">"*"</span>;</div><div class="line">   &#125;</div><div class="line">    </div><div class="line">   <span class="attribute">location</span> /group3/M00 &#123; <span class="comment">#如果是远程Storage结点，通过proxy_pass访问</span></div><div class="line">      <span class="attribute">proxy_pass</span> http://fdfs_group3;</div><div class="line">      </div><div class="line">    &#125;</div><div class="line"> &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>storage的配置</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">server</span>  </div><div class="line">&#123;  </div><div class="line"> <span class="attribute">listen</span> a_port;  </div><div class="line"> <span class="attribute">server_name</span> another_ip_of_storage;   </div><div class="line">  </div><div class="line"> <span class="attribute">location</span> /group3/M01/ &#123;  </div><div class="line"> 	<span class="attribute">root</span> /data/fastdfs/storage/data;</div><div class="line"> 	<span class="attribute">rewrite</span><span class="regexp"> ^/group2/M01/(.*)</span> /<span class="variable">$1</span> <span class="literal">break</span>;</div><div class="line">    <span class="attribute">add_header</span> <span class="string">'Access-Control-Allow-Origin'</span> <span class="string">"*"</span>;</div><div class="line"> &#125;</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>​</p>
-</li>
-</ol>
-</li>
-<li><p>其他事项</p>
-<p><strong>访问文件服务器的文件时，地址要用tracker的地址。</strong></p>
-</li>
-</ol>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
     
 
     </div>

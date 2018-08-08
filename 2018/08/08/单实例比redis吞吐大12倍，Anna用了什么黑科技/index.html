@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>单实例比redis吞吐大12倍，Anna用了什么黑科技？ | LawrencePeng&#39;s Blog | 专注收集代码小精灵</title>
+
+  
+  <meta name="author" content="LawrencePeng">
+  
+
+  
+  <meta name="description" content="Meow">
+  
+
+  
+  
+  <meta name="keywords" content="redis,anna,actor">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="单实例比redis吞吐大12倍，Anna用了什么黑科技？"/>
+
+  <meta property="og:site_name" content="LawrencePeng&#39;s Blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="LawrencePeng&#39;s Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">LawrencePeng&#39;s Blog</a>
+    </h1>
+    <p class="site-description">专注收集代码小精灵</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>单实例比redis吞吐大12倍，Anna用了什么黑科技？</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/08/单实例比redis吞吐大12倍，Anna用了什么黑科技/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-08T08:35:45.285Z">
+          2018-08-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="为什么Redis快？"><a href="#为什么Redis快？" class="headerlink" title="为什么Redis快？"></a>为什么Redis快？</h1><p>要说明为什么redis快的话，至少要一篇中篇文章的长度了。我们长话短说：</p>
+<ol>
+<li>内核操作，IO关键路径少。</li>
+<li>非阻塞网络模型</li>
+<li>良好的CodeBase</li>
+</ol>
+<h1 id="为什么Redis不够快？"><a href="#为什么Redis不够快？" class="headerlink" title="为什么Redis不够快？"></a>为什么Redis不够快？</h1><p>就一个线程，还想怎样？</p>
+<p>为什么Redis不是多线程架构呢？</p>
+<p>因为共享内存架构，多线程就得要锁、抢占吧。</p>
+<h1 id="Anna的利器-Actor模型"><a href="#Anna的利器-Actor模型" class="headerlink" title="Anna的利器-Actor模型"></a>Anna的利器-Actor模型</h1><p>Actor模型意味着每个Actor之间不共享内存，发消息来同步。</p>
+<p>没有共享内存了，自然就没有锁了。</p>
+<p>我们自然就进入了Wait-Free世界。</p>
+<p>每个核心pin一个CPU，自然没有抢占了。</p>
+<p>然后Actor模型要做真同步的代价太大，所以我们的Anna不是强一致性的，实际上，很多时候，我们也不需要强一致性。</p>
+<h1 id="Anna的尖刀-CRDT"><a href="#Anna的尖刀-CRDT" class="headerlink" title="Anna的尖刀-CRDT"></a>Anna的尖刀-CRDT</h1><p>和直接一个hashmap相比，Anna选择的是实现一个CRDT-Map。为什么要这样呢?</p>
+<p>Anna采用Multi-Master架构，每个Master都可能受到一些写操作，在一个epoch结束时，个个Master需要互相交换更新。如果不使用CRDT，一个简单的做法就是将所有的写操作记录在Log中，发Log给所有其他Master。这样的问题就在于如果操作过多，消息传递、Apply的时间就不会少，而且顺序也变的重要了起来，很难最后收敛到一致。所以使用CRDT，收敛就不是问题了。每个Epoch结束Master只需要把自己的状态发给其他Master即可，CRDT能保证无论状态收到的顺序如何，最后都能收敛。问题解决。</p>
+<h1 id="Anna的语法糖-预定义的冲突解决器"><a href="#Anna的语法糖-预定义的冲突解决器" class="headerlink" title="Anna的语法糖-预定义的冲突解决器"></a>Anna的语法糖-预定义的冲突解决器</h1><p>用了CRDT很麻烦的时候就是并发操作的时候需要自己写冲突解决器。Riak就是这样的设计，用Cassandra的LWW肯定问题多多，那么Anna怎么做的呢？要实现xxx-consistency怎么做呢？Anna的作者帮你解决了常见的consistentcy的代码编写，实际上得益于CRDT优秀的模块化能力，更改的代码很少超过50行。用的开心。</p>
+<h1 id="到18年了，什么变了？"><a href="#到18年了，什么变了？" class="headerlink" title="到18年了，什么变了？"></a>到18年了，什么变了？</h1><p>很开心看到Actor模式的部分推广。Erlang、Akka的思想是从本质上思考软件本身。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/redis/">redis</a><a href="/tags/anna/">anna</a><a href="/tags/actor/">actor</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2018 LawrencePeng
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
